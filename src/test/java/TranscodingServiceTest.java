@@ -8,6 +8,7 @@ import org.junit.Test;
  * To change this template use File | Settings | File Templates.
  */
 public class TranscodingServiceTest {
+
 	@Test
 	public void transcodeSuccessfully() {
 		// 미디어 원본으로부터 파일을 로컬에 복사한다.
