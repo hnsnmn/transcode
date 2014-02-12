@@ -1,4 +1,4 @@
-package hnsnmn.service;
+package hnsnmn;
 
 import java.io.File;
 
