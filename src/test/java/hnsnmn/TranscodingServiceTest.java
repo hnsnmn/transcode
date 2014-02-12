@@ -1,6 +1,6 @@
 package hnsnmn;
 
-import hnsnmn.service.TranscodingService;
+import hnsnmn.service.TranscodingServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,7 +37,7 @@ public class TranscodingServiceTest {
 	public void setUp() {
 //		mediaSourceCopier = mock(MediaSourceCopier.class);
 		MockitoAnnotations.initMocks(this);
-		transcodingService = new TranscodingService(mediaSourceCopier, jobResultNotifier, createdFileSender, thumbnailExtractor, transcoder);
+		transcodingService = new TranscodingServiceImpl(mediaSourceCopier, jobResultNotifier, createdFileSender, thumbnailExtractor, transcoder);
 	}
 
 
