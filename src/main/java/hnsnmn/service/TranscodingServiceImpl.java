@@ -12,14 +12,14 @@ import java.util.List;
  * Time: 오후 4:55
  * To change this template use File | Settings | File Templates.
  */
-public class TranscodingService {
+public class TranscodingServiceImpl implements TranscodingService {
 	private MediaSourceCopier mediaSourceCopier;
 	private JobResultNotifier jobResultNotifier;
 	private CreatedFileSender createdFileSender;
 	private ThumbnailExtractor thumbnailExtractor;
 	private Transcoder transcoder;
 
-	public TranscodingService(MediaSourceCopier mediaSourceCopier, JobResultNotifier jobResultNotifier, CreatedFileSender createdFileSender, ThumbnailExtractor thumbnailExtractor,  Transcoder transcoder) {
+	public TranscodingServiceImpl(MediaSourceCopier mediaSourceCopier, JobResultNotifier jobResultNotifier, CreatedFileSender createdFileSender, ThumbnailExtractor thumbnailExtractor, Transcoder transcoder) {
 		this.mediaSourceCopier = mediaSourceCopier;
 		this.jobResultNotifier = jobResultNotifier;
 		this.createdFileSender = createdFileSender;
