@@ -11,5 +11,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface CreatedFileSender {
-	void send(List<File> multimediaFiles, List<File> thumbnails, Long jobId);
+	void store(List<File> multimediaFiles, List<File> thumbnails, Long jobId);
 }

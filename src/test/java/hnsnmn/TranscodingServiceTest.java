@@ -128,7 +128,7 @@ public class TranscodingServiceTest {
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenThrow(mockException);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
+		excuteFailingTranscodeAndAssertFail(Job.State.TRANSCODING);
 
 		VerifyOptions verifyOptions = new VerifyOptions();
 		verifyOptions.thumbnailExtractorNever = true;
@@ -144,7 +144,7 @@ public class TranscodingServiceTest {
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenThrow(mockException);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
+		excuteFailingTranscodeAndAssertFail(Job.State.EXTRACTINGTHUMBNAIL);
 
 		VerifyOptions verifyOptions = new VerifyOptions();
 		verifyOptions.createdFileSenderNever = true;
@@ -159,9 +159,9 @@ public class TranscodingServiceTest {
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		doThrow(mockException).when(createdFileSender).send(mockMultimediaFiles, mockThumbnails, jobId);
+		doThrow(mockException).when(createdFileSender).store(mockMultimediaFiles, mockThumbnails, jobId);
 
-		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
+		excuteFailingTranscodeAndAssertFail(Job.State.STORING);
 
 		VerifyOptions verifyOptions = new VerifyOptions();
 		verifyOptions.jobResultNotifierNever = true;
@@ -178,7 +178,7 @@ public class TranscodingServiceTest {
 		doThrow(mockException).when(jobResultNotifier).notifyToRequest(jobId);
 
 
-		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
+		excuteFailingTranscodeAndAssertFail(Job.State.NOTIFYING);
 
 		VerifyOptions verifyOptions = new VerifyOptions();
 		verifyCollaboration(verifyOptions);
@@ -214,9 +214,9 @@ public class TranscodingServiceTest {
 			verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
 
 		if (verifyOption.createdFileSenderNever)
-			verify(createdFileSender, never()).send(mockMultimediaFiles, mockThumbnails, jobId);
+			verify(createdFileSender, never()).store(mockMultimediaFiles, mockThumbnails, jobId);
 		else
-			verify(createdFileSender, only()).send(mockMultimediaFiles, mockThumbnails, jobId);
+			verify(createdFileSender, only()).store(mockMultimediaFiles, mockThumbnails, jobId);
 
 		if (verifyOption.jobResultNotifierNever)
 			verify(jobResultNotifier, never()).notifyToRequest(jobId);

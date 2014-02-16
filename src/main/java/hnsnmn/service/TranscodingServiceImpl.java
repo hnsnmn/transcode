@@ -39,19 +39,24 @@ public class TranscodingServiceImpl implements TranscodingService {
 
 	public void transcode(Long jobId) {
 		changeJobState(jobId, Job.State.MEDIASOURCECOPYING);
-
 		// 미디어 원본으로부터 파일을 로컬에 복사한다.
 		File multimediaFile = copyMultimediaSourceToLocal(jobId);
+
+
+		changeJobState(jobId, Job.State.TRANSCODING);
 		// 로컬에 복사된 파일을 변환처리한다.
 		List<File> multimediaFiles = transcode(multimediaFile, jobId);
 
+		changeJobState(jobId, Job.State.EXTRACTINGTHUMBNAIL);
 		// 로컬에 복사된 파일로부터 이미지를 추출한다.
 		List<File> thumbnails = extractThumbnail(multimediaFile, jobId);
 
 
+		changeJobState(jobId, Job.State.STORING);
 		// 변환된 결과 파일과 썸네일 이미지를 목적지에 저장한다.
-		sendCreatedFilesToDestination(multimediaFiles, thumbnails, jobId);
+		storeCreatedFilesToDestination(multimediaFiles, thumbnails, jobId);
 
+		changeJobState(jobId, Job.State.NOTIFYING);
 		// 결과를 통지한다.
 		notifyJobResultToRequester(jobId);
 		changeJobState(jobId, Job.State.COMPLETED);
@@ -88,9 +93,9 @@ public class TranscodingServiceImpl implements TranscodingService {
 		}
 	}
 
-	private void sendCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails, Long jobId) {
+	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails, Long jobId) {
 		try {
-			createdFileSender.send(multimediaFiles, thumbnails, jobId);
+			createdFileSender.store(multimediaFiles, thumbnails, jobId);
 		} catch (RuntimeException ex) {
 			transcodingExceptionHandler.notifyToJob(jobId, ex);
 			throw ex;
