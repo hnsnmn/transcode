@@ -65,8 +65,6 @@ public class TranscodingServiceTest {
 				createdFileSender,
 				thumbnailExtractor,
 				transcoder,
-				jobStateChanger,
-				transcodingExceptionHandler,
 				jobRepository);
 
 		doAnswer(new Answer<Object>() {
