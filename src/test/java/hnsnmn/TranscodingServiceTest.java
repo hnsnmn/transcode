@@ -47,13 +47,14 @@ public class TranscodingServiceTest {
 	@Mock
 	private JobResultNotifier jobResultNotifier;
 	@Mock
-	private JobRepository jobRepositor;
+	private JobRepository jobRepository;
 	@Mock
 	private JobStateChanger jobStateChanger;
 	@Mock
 	private TranscodingExceptionHandler transcodingExceptionHandler;
+
 	private TranscodingService transcodingService;
-	private Job mockJob = new Job();
+	private Job mockJob = new Job(jobId);
 
 	@Before
 	public void setUp() {
@@ -65,7 +66,8 @@ public class TranscodingServiceTest {
 				thumbnailExtractor,
 				transcoder,
 				jobStateChanger,
-				transcodingExceptionHandler);
+				transcodingExceptionHandler,
+				jobRepository);
 
 		doAnswer(new Answer<Object>() {
 			@Override
@@ -88,13 +90,13 @@ public class TranscodingServiceTest {
 
 	@Test
 	public void transcodeSuccessfully() {
-		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
+		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 
 
-		Job job = jobRepositor.findById(jobId);
+		Job job = jobRepository.findById(jobId);
 		assertTrue(job.isWaiting());
 		transcodingService.transcode(jobId);
 
@@ -109,7 +111,7 @@ public class TranscodingServiceTest {
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtMediaSourceCopier() {
-		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
+		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 		when(mediaSourceCopier.copy(jobId)).thenThrow(mockException);
 
 		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
@@ -126,7 +128,7 @@ public class TranscodingServiceTest {
 	public void transcodeFailBecuaseExceptionOccuredAtTranscode() {
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenThrow(mockException);
-		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
+		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 
 		excuteFailingTranscodeAndAssertFail(Job.State.TRANSCODING);
 
@@ -142,7 +144,7 @@ public class TranscodingServiceTest {
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenThrow(mockException);
-		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
+		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 
 		excuteFailingTranscodeAndAssertFail(Job.State.EXTRACTINGTHUMBNAIL);
 
@@ -157,7 +159,7 @@ public class TranscodingServiceTest {
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
-		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
+		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 
 		doThrow(mockException).when(createdFileSender).store(mockMultimediaFiles, mockThumbnails, jobId);
 
@@ -173,7 +175,7 @@ public class TranscodingServiceTest {
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
-		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
+		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 
 		doThrow(mockException).when(jobResultNotifier).notifyToRequest(jobId);
 
@@ -193,7 +195,7 @@ public class TranscodingServiceTest {
 		}
 		assertThat(throwEx, instanceOf(Exception.class));
 
-		Job job = jobRepositor.findById(jobId);
+		Job job = jobRepository.findById(jobId);
 		assertTrue(job.isFinish());
 		assertFalse(job.isSuccess());
 		assertEquals(expected, job.getLastState());
