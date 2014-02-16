@@ -15,8 +15,6 @@ public class TranscodingServiceImpl implements TranscodingService {
 	private CreatedFileSender createdFileSender;
 	private ThumbnailExtractor thumbnailExtractor;
 	private Transcoder transcoder;
-	private JobStateChanger jobStateChanger;
-	private TranscodingExceptionHandler transcodingExceptionHandler;
 	private JobRepository jobRepository;
 
 	public TranscodingServiceImpl(MediaSourceCopier mediaSourceCopier,
@@ -24,16 +22,12 @@ public class TranscodingServiceImpl implements TranscodingService {
 								  CreatedFileSender createdFileSender,
 								  ThumbnailExtractor thumbnailExtractor,
 								  Transcoder transcoder,
-								  JobStateChanger jobStateChnager,
-								  TranscodingExceptionHandler transcodingExceptionHandler,
 								  JobRepository jobRepository) {
 		this.mediaSourceCopier = mediaSourceCopier;
 		this.jobResultNotifier = jobResultNotifier;
 		this.createdFileSender = createdFileSender;
 		this.thumbnailExtractor = thumbnailExtractor;
 		this.transcoder = transcoder;
-		this.jobStateChanger = jobStateChnager;
-		this.transcodingExceptionHandler = transcodingExceptionHandler;
 		this.jobRepository = jobRepository;
 	}
 

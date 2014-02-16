@@ -46,11 +46,11 @@ public class Job {
 		return state;
 	}
 
-	public void changeState(State state) {
+	private void changeState(State state) {
 		this.state = state;
 	}
 
-	public void exceptionOccured(RuntimeException ex) {
+	private void exceptionOccured(RuntimeException ex) {
 		occurredException = ex;
 	}
 

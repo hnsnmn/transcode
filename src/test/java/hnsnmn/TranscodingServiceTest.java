@@ -7,8 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,24 +64,6 @@ public class TranscodingServiceTest {
 				thumbnailExtractor,
 				transcoder,
 				jobRepository);
-
-		doAnswer(new Answer<Object>() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				Job.State newState = (Job.State) invocationOnMock.getArguments()[1];
-				mockJob.changeState(newState);
-				return null;
-			}
-		}).when(jobStateChanger).changeJobState(anyLong(), any(Job.State.class));
-
-		doAnswer(new Answer<Object>() {
-			@Override
-			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-				RuntimeException ex = (RuntimeException) invocationOnMock.getArguments()[1];
-				mockJob.exceptionOccured(ex);
-				return null;
-			}
-		}).when(transcodingExceptionHandler).notifyToJob(anyLong(), any(RuntimeException.class));
 	}
 
 	@Test
