@@ -70,6 +70,15 @@ public class TranscodingServiceImpl implements TranscodingService {
 		}
 	}
 
+	private List<File> transcode(File mediaFile, Long jobId) {
+		try {
+			return transcoder.transcode(mediaFile, jobId);
+		} catch (RuntimeException ex) {
+			transcodingExceptionHandler.notifyToJob(jobId, ex);
+			throw ex;
+		}
+	}
+
 	private void notifyJobResultToRequester(Long jobId) {
 		try {
 			jobResultNotifier.notifyToRequest(jobId);
@@ -91,15 +100,6 @@ public class TranscodingServiceImpl implements TranscodingService {
 	private List<File> extractThumbnail(File multimediaFile, Long jobId) {
 		try {
 			return thumbnailExtractor.extract(multimediaFile, jobId);
-		} catch (RuntimeException ex) {
-			transcodingExceptionHandler.notifyToJob(jobId, ex);
-			throw ex;
-		}
-	}
-
-	private List<File> transcode(File mediaFile, Long jobId) {
-		try {
-			return transcoder.transcode(mediaFile, jobId);
 		} catch (RuntimeException ex) {
 			transcodingExceptionHandler.notifyToJob(jobId, ex);
 			throw ex;
