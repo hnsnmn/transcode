@@ -31,6 +31,10 @@ import static org.mockito.Mockito.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TranscodingServiceTest {
+	private final File mockMultimediaFile = mock(File.class);
+	private final List<File> mockMultimediaFiles = new ArrayList<File>();
+	private final List<File> mockThumbnails = new ArrayList<File>();
+	private final RuntimeException mockException = new RuntimeException();
 	Long jobId = new Long(1);
 	@Mock
 	private MediaSourceCopier mediaSourceCopier;
@@ -48,12 +52,8 @@ public class TranscodingServiceTest {
 	private JobStateChanger jobStateChanger;
 	@Mock
 	private TranscodingExceptionHandler transcodingExceptionHandler;
-
 	private TranscodingService transcodingService;
 	private Job mockJob = new Job();
-	private final File mockMultimediaFile = mock(File.class);
-	private final List<File> mockMultimediaFiles = new ArrayList<File>();
-	private final List<File> mockThumbnails = new ArrayList<File>();
 
 	@Before
 	public void setUp() {
@@ -103,99 +103,53 @@ public class TranscodingServiceTest {
 		assertEquals(Job.State.COMPLETED, job.getLastState());
 		assertNull(job.getOccuredException());
 
-		verify(mediaSourceCopier, only()).copy(jobId);
-		verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
-		verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
-		verify(createdFileSender, only()).send(mockMultimediaFiles, mockThumbnails, jobId);
-		verify(jobResultNotifier, only()).notifyToRequest(jobId);
-
+		VerifyOptions verifyOptions = new VerifyOptions();
+		verifyCollaboration(verifyOptions);
 	}
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtMediaSourceCopier() {
-		RuntimeException mockException = new RuntimeException();
-
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 		when(mediaSourceCopier.copy(jobId)).thenThrow(mockException);
 
-		Exception throwEx = null;
-		try {
-			transcodingService.transcode(jobId);
-		} catch (Exception e) {
-			throwEx = e;
-		}
-		assertThat(throwEx, instanceOf(Exception.class));
+		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
 
-		Job job = jobRepositor.findById(jobId);
-		assertTrue(job.isFinish());
-		assertFalse(job.isSuccess());
-		assertEquals(Job.State.MEDIASOURCECOPYING, job.getLastState());
-		assertNotNull(job.getOccuredException());
-
-		verify(mediaSourceCopier, only()).copy(jobId);
-		verify(transcoder, never()).transcode(any(File.class), anyLong());
-		verify(thumbnailExtractor, never()).extract(any(File.class), anyLong());
-		verify(createdFileSender, never()).send(anyListOf(File.class), anyListOf(File.class), anyLong());
-		verify(jobResultNotifier, never()).notifyToRequest(anyLong());
-
+		VerifyOptions verifyOptions = new VerifyOptions();
+		verifyOptions.transcoderNever = true;
+		verifyOptions.thumbnailExtractorNever = true;
+		verifyOptions.createdFileSenderNever = true;
+		verifyOptions.jobResultNotifierNever = true;
+		verifyCollaboration(verifyOptions);
 	}
 
 	@Test
 	public void transcodeFailBecuaseExceptionOccuredAtTranscode() {
-		RuntimeException mockException = new RuntimeException();
-
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenThrow(mockException);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		Exception throwEx = null;
-		try {
-			transcodingService.transcode(jobId);
-		} catch (Exception e) {
-			throwEx = e;
-		}
-		assertThat(throwEx, instanceOf(Exception.class));
-		Job job = jobRepositor.findById(jobId);
-		assertTrue(job.isFinish());
-		assertFalse(job.isSuccess());
-		assertEquals(Job.State.MEDIASOURCECOPYING, job.getLastState());
-		assertNotNull(job.getOccuredException());
+		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
 
-		verify(mediaSourceCopier, only()).copy(jobId);
-		verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
-		verify(thumbnailExtractor, never()).extract(any(File.class), anyLong());
-		verify(createdFileSender, never()).send(anyListOf(File.class), anyListOf(File.class), anyLong());
-		verify(jobResultNotifier, never()).notifyToRequest(anyLong());
+		VerifyOptions verifyOptions = new VerifyOptions();
+		verifyOptions.thumbnailExtractorNever = true;
+		verifyOptions.createdFileSenderNever = true;
+		verifyOptions.jobResultNotifierNever = true;
+		verifyCollaboration(verifyOptions);
 	}
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtThumbnailExtractor() {
-		RuntimeException mockException = new RuntimeException();
-
 		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenThrow(mockException);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		Exception throwEx = null;
-		try {
-			transcodingService.transcode(jobId);
-		} catch (Exception e) {
-			throwEx = e;
-		}
-		assertThat(throwEx, instanceOf(Exception.class));
+		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
 
-		Job job = jobRepositor.findById(jobId);
-		assertTrue(job.isFinish());
-		assertFalse(job.isSuccess());
-		assertEquals(Job.State.MEDIASOURCECOPYING, job.getLastState());
-		assertNotNull(job.getOccuredException());
-
-		verify(mediaSourceCopier, only()).copy(jobId);
-		verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
-		verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
-		verify(createdFileSender, never()).send(anyListOf(File.class), anyListOf(File.class), anyLong());
-		verify(jobResultNotifier, never()).notifyToRequest(jobId);
+		VerifyOptions verifyOptions = new VerifyOptions();
+		verifyOptions.createdFileSenderNever = true;
+		verifyOptions.jobResultNotifierNever = true;
+		verifyCollaboration(verifyOptions);
 	}
 
 	@Test
@@ -205,27 +159,13 @@ public class TranscodingServiceTest {
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		RuntimeException mockException = new RuntimeException();
 		doThrow(mockException).when(createdFileSender).send(mockMultimediaFiles, mockThumbnails, jobId);
 
-		Exception throwEx = null;
-		try {
-			transcodingService.transcode(jobId);
-		} catch (Exception e) {
-			throwEx = e;
-		}
-		assertThat(throwEx, instanceOf(Exception.class));
-		Job job = jobRepositor.findById(jobId);
-		assertTrue(job.isFinish());
-		assertFalse(job.isSuccess());
-		assertEquals(Job.State.MEDIASOURCECOPYING, job.getLastState());
-		assertNotNull(job.getOccuredException());
+		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
 
-		verify(mediaSourceCopier, only()).copy(jobId);
-		verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
-		verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
-		verify(createdFileSender, only()).send(mockMultimediaFiles, mockThumbnails, jobId);
-		verify(jobResultNotifier, never()).notifyToRequest(jobId);
+		VerifyOptions verifyOptions = new VerifyOptions();
+		verifyOptions.jobResultNotifierNever = true;
+		verifyCollaboration(verifyOptions);
 	}
 
 	@Test
@@ -235,10 +175,16 @@ public class TranscodingServiceTest {
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 		when(jobRepositor.findById(jobId)).thenReturn(mockJob);
 
-		RuntimeException mockException = new RuntimeException();
 		doThrow(mockException).when(jobResultNotifier).notifyToRequest(jobId);
 
 
+		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
+
+		VerifyOptions verifyOptions = new VerifyOptions();
+		verifyCollaboration(verifyOptions);
+	}
+
+	private void excuteFailingTranscodeAndAssertFail(Job.State expected) {
 		Exception throwEx = null;
 		try {
 			transcodingService.transcode(jobId);
@@ -246,16 +192,43 @@ public class TranscodingServiceTest {
 			throwEx = e;
 		}
 		assertThat(throwEx, instanceOf(Exception.class));
+
 		Job job = jobRepositor.findById(jobId);
 		assertTrue(job.isFinish());
 		assertFalse(job.isSuccess());
-		assertEquals(Job.State.MEDIASOURCECOPYING, job.getLastState());
+		assertEquals(expected, job.getLastState());
 		assertNotNull(job.getOccuredException());
+	}
 
+	private void verifyCollaboration(VerifyOptions verifyOption) {
 		verify(mediaSourceCopier, only()).copy(jobId);
-		verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
-		verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
-		verify(createdFileSender, only()).send(mockMultimediaFiles, mockThumbnails, jobId);
-		verify(jobResultNotifier, only()).notifyToRequest(jobId);
+
+		if (verifyOption.transcoderNever)
+			verify(transcoder, never()).transcode(any(File.class), anyLong());
+		else
+			verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
+
+		if (verifyOption.thumbnailExtractorNever)
+			verify(thumbnailExtractor, never()).extract(any(File.class), anyLong());
+		else
+			verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
+
+		if (verifyOption.createdFileSenderNever)
+			verify(createdFileSender, never()).send(mockMultimediaFiles, mockThumbnails, jobId);
+		else
+			verify(createdFileSender, only()).send(mockMultimediaFiles, mockThumbnails, jobId);
+
+		if (verifyOption.jobResultNotifierNever)
+			verify(jobResultNotifier, never()).notifyToRequest(jobId);
+		else
+			verify(jobResultNotifier, only()).notifyToRequest(jobId);
+
+	}
+
+	private class VerifyOptions {
+		public boolean transcoderNever;
+		public boolean thumbnailExtractorNever;
+		public boolean createdFileSenderNever;
+		public boolean jobResultNotifierNever;
 	}
 }
