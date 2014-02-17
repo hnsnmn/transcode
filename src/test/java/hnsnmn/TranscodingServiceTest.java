@@ -90,7 +90,7 @@ public class TranscodingServiceTest {
 		assertNull(job.getOccuredException());
 
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
-		collaborationVerifier.verifyCollaboration(collaborationVerifier);
+		collaborationVerifier.verifyCollaboration();
 	}
 
 	@Test
@@ -105,7 +105,7 @@ public class TranscodingServiceTest {
 		collaborationVerifier.thumbnailExtractorNever = true;
 		collaborationVerifier.destinationStorageNever = true;
 		collaborationVerifier.jobResultNotifierNever = true;
-		collaborationVerifier.verifyCollaboration(collaborationVerifier);
+		collaborationVerifier.verifyCollaboration();
 	}
 
 	@Test
@@ -119,7 +119,7 @@ public class TranscodingServiceTest {
 		collaborationVerifier.thumbnailExtractorNever = true;
 		collaborationVerifier.destinationStorageNever = true;
 		collaborationVerifier.jobResultNotifierNever = true;
-		collaborationVerifier.verifyCollaboration(collaborationVerifier);
+		collaborationVerifier.verifyCollaboration();
 	}
 
 	@Test
@@ -133,7 +133,7 @@ public class TranscodingServiceTest {
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
 		collaborationVerifier.destinationStorageNever = true;
 		collaborationVerifier.jobResultNotifierNever = true;
-		collaborationVerifier.verifyCollaboration(collaborationVerifier);
+		collaborationVerifier.verifyCollaboration();
 	}
 
 	@Test
@@ -148,7 +148,7 @@ public class TranscodingServiceTest {
 
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
 		collaborationVerifier.jobResultNotifierNever = true;
-		collaborationVerifier.verifyCollaboration(collaborationVerifier);
+		collaborationVerifier.verifyCollaboration();
 	}
 
 	@Test
@@ -163,7 +163,7 @@ public class TranscodingServiceTest {
 		excuteFailingTranscodeAndAssertFail(Job.State.NOTIFYING);
 
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
-		collaborationVerifier.verifyCollaboration(collaborationVerifier);
+		collaborationVerifier.verifyCollaboration();
 	}
 
 	private void excuteFailingTranscodeAndAssertFail(Job.State expected) {
@@ -189,25 +189,25 @@ public class TranscodingServiceTest {
 		public boolean jobResultNotifierNever;
 		public boolean destinationStorageNever;
 
-		public void verifyCollaboration(CollaborationVerifier collaborationVerifier) {
+		public void verifyCollaboration() {
 //		verify(mediaSourceCopier, only()).copy(jobId);
 
-			if (collaborationVerifier.transcoderNever)
+			if (this.transcoderNever)
 				verify(transcoder, never()).transcode(any(File.class), anyLong());
 			else
 				verify(transcoder, only()).transcode(mockMultimediaFile, jobId);
 
-			if (collaborationVerifier.thumbnailExtractorNever)
+			if (this.thumbnailExtractorNever)
 				verify(thumbnailExtractor, never()).extract(any(File.class), anyLong());
 			else
 				verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
 
-			if (collaborationVerifier.destinationStorageNever)
+			if (this.destinationStorageNever)
 				verify(destinationStorage, never()).save(mockMultimediaFiles, mockThumbnails);
 			else
 				verify(destinationStorage, only()).save(mockMultimediaFiles, mockThumbnails);
 
-			if (collaborationVerifier.jobResultNotifierNever)
+			if (this.jobResultNotifierNever)
 				verify(jobResultNotifier, never()).notifyToRequest(jobId);
 			else
 				verify(jobResultNotifier, only()).notifyToRequest(jobId);
