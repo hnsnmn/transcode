@@ -11,7 +11,6 @@ import hnsnmn.*;
  */
 public class TranscodingServiceImpl implements TranscodingService {
 	private JobResultNotifier jobResultNotifier;
-	private CreatedFileSender createdFileSender;
 	private ThumbnailExtractor thumbnailExtractor;
 	private Transcoder transcoder;
 	private JobRepository jobRepository;
@@ -31,53 +30,4 @@ public class TranscodingServiceImpl implements TranscodingService {
 		Job job = jobRepository.findById(jobId);
 		job.transcode(transcoder, thumbnailExtractor, jobResultNotifier);
 	}
-
-//	private void changeJobState(Long jobId, Job.State newJobState) {
-//		jobStateChanger.changeJobState(jobId, newJobState);
-//	}
-//
-//	private File copyMultimediaSourceToLocal(Long jobId) {
-//		try {
-//			return mediaSourceCopier.copy(jobId);
-//		} catch (RuntimeException ex) {
-//			transcodingExceptionHandler.notifyToJob(jobId, ex);
-//			throw ex;
-//		}
-//	}
-//
-//	private List<File> transcode(File mediaFile, Long jobId) {
-//		try {
-//			return transcoder.transcode(mediaFile, jobId);
-//		} catch (RuntimeException ex) {
-//			transcodingExceptionHandler.notifyToJob(jobId, ex);
-//			throw ex;
-//		}
-//	}
-//
-//	private void notifyJobResultToRequester(Long jobId) {
-//		try {
-//			jobResultNotifier.notifyToRequest(jobId);
-//		} catch (RuntimeException ex) {
-//			transcodingExceptionHandler.notifyToJob(jobId, ex);
-//			throw ex;
-//		}
-//	}
-//
-//	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails, Long jobId) {
-//		try {
-//			createdFileSender.store(multimediaFiles, thumbnails, jobId);
-//		} catch (RuntimeException ex) {
-//			transcodingExceptionHandler.notifyToJob(jobId, ex);
-//			throw ex;
-//		}
-//	}
-//
-//	private List<File> extractThumbnail(File multimediaFile, Long jobId) {
-//		try {
-//			return thumbnailExtractor.extract(multimediaFile, jobId);
-//		} catch (RuntimeException ex) {
-//			transcodingExceptionHandler.notifyToJob(jobId, ex);
-//			throw ex;
-//		}
-//	}
 }
