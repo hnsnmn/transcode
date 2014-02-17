@@ -67,7 +67,6 @@ public class TranscodingServiceTest {
 		when(mediaSourceFile.getSourceFile()).thenReturn(mockMultimediaFile);
 
 		transcodingService = new TranscodingServiceImpl(jobResultNotifier,
-				createdFileSender,
 				thumbnailExtractor,
 				transcoder,
 				jobRepository);
@@ -211,7 +210,6 @@ public class TranscodingServiceTest {
 	private class VerifyOptions {
 		public boolean transcoderNever;
 		public boolean thumbnailExtractorNever;
-		public boolean createdFileSenderNever;
 		public boolean jobResultNotifierNever;
 		public boolean destinationStorageNever;
 	}
