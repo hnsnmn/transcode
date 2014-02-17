@@ -13,16 +13,18 @@ import java.util.List;
 public class Job {
 
 	private Long id;
-
 	private State state;
 
 	private Exception occurredException;
 
 	private MediaSourceFile mediaSourceFile;
 
-	public Job(Long id, MediaSourceFile mediaSourceFile) {
+	private DestinationStorage destinationStorage;
+
+	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage) {
 		this.id = id;
 		this.mediaSourceFile = mediaSourceFile;
+		this.destinationStorage = destinationStorage;
 	}
 
 	public Exception getOccuredException() {
@@ -112,7 +114,7 @@ public class Job {
 	}
 
 	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails, CreatedFileSender createdFileSender) {
-		createdFileSender.store(multimediaFiles, thumbnails, id);
+		destinationStorage.save(multimediaFiles, thumbnails);
 	}
 
 	private List<File> extractThumbnail(File multimediaFile, ThumbnailExtractor thumbnailExtractor) {

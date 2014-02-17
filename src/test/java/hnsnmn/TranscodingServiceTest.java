@@ -52,6 +52,8 @@ public class TranscodingServiceTest {
 	private TranscodingExceptionHandler transcodingExceptionHandler;
 	@Mock
 	private MediaSourceFile mediaSourceFile;
+	@Mock
+	private DestinationStorage destinationStorage;
 
 	private TranscodingService transcodingService;
 	private Job mockJob;
@@ -61,7 +63,7 @@ public class TranscodingServiceTest {
 //		mediaSourceCopier = mock(MediaSourceCopier.class);
 		MockitoAnnotations.initMocks(this);
 
-		mockJob = new Job(jobId, mediaSourceFile);
+		mockJob = new Job(jobId, mediaSourceFile, destinationStorage);
 		when(mediaSourceFile.getSourceFile()).thenReturn(mockMultimediaFile);
 
 		transcodingService = new TranscodingServiceImpl(jobResultNotifier,
@@ -102,7 +104,7 @@ public class TranscodingServiceTest {
 		VerifyOptions verifyOptions = new VerifyOptions();
 		verifyOptions.transcoderNever = true;
 		verifyOptions.thumbnailExtractorNever = true;
-		verifyOptions.createdFileSenderNever = true;
+		verifyOptions.destinationStorageNever = true;
 		verifyOptions.jobResultNotifierNever = true;
 		verifyCollaboration(verifyOptions);
 	}
@@ -116,7 +118,7 @@ public class TranscodingServiceTest {
 
 		VerifyOptions verifyOptions = new VerifyOptions();
 		verifyOptions.thumbnailExtractorNever = true;
-		verifyOptions.createdFileSenderNever = true;
+		verifyOptions.destinationStorageNever = true;
 		verifyOptions.jobResultNotifierNever = true;
 		verifyCollaboration(verifyOptions);
 	}
@@ -130,7 +132,7 @@ public class TranscodingServiceTest {
 		excuteFailingTranscodeAndAssertFail(Job.State.EXTRACTINGTHUMBNAIL);
 
 		VerifyOptions verifyOptions = new VerifyOptions();
-		verifyOptions.createdFileSenderNever = true;
+		verifyOptions.destinationStorageNever = true;
 		verifyOptions.jobResultNotifierNever = true;
 		verifyCollaboration(verifyOptions);
 	}
@@ -141,7 +143,7 @@ public class TranscodingServiceTest {
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 
-		doThrow(mockException).when(createdFileSender).store(mockMultimediaFiles, mockThumbnails, jobId);
+		doThrow(mockException).when(destinationStorage).save(mockMultimediaFiles, mockThumbnails);
 
 		excuteFailingTranscodeAndAssertFail(Job.State.STORING);
 
@@ -194,10 +196,10 @@ public class TranscodingServiceTest {
 		else
 			verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
 
-		if (verifyOption.createdFileSenderNever)
-			verify(createdFileSender, never()).store(mockMultimediaFiles, mockThumbnails, jobId);
+		if (verifyOption.destinationStorageNever)
+			verify(destinationStorage, never()).save(mockMultimediaFiles, mockThumbnails);
 		else
-			verify(createdFileSender, only()).store(mockMultimediaFiles, mockThumbnails, jobId);
+			verify(destinationStorage, only()).save(mockMultimediaFiles, mockThumbnails);
 
 		if (verifyOption.jobResultNotifierNever)
 			verify(jobResultNotifier, never()).notifyToRequest(jobId);
@@ -211,5 +213,6 @@ public class TranscodingServiceTest {
 		public boolean thumbnailExtractorNever;
 		public boolean createdFileSenderNever;
 		public boolean jobResultNotifierNever;
+		public boolean destinationStorageNever;
 	}
 }
