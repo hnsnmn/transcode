@@ -72,28 +72,24 @@ public class Job {
 	public void transcode( Transcoder transcoder, ThumbnailExtractor thumbnailExtractor,
 						  JobResultNotifier jobResultNotifier) {
 		try {
-			changeState(State.MEDIASOURCECOPYING);
 			// 미디어 원본으로부터 파일을 로컬에 복사한다.
 			File multimediaFile = copyMultimediaSourceToLocal();
 
 
-			changeState(Job.State.TRANSCODING);
 			// 로컬에 복사된 파일을 변환처리한다.
 			List<File> multimediaFiles = transcode(multimediaFile, transcoder);
 
-			changeState(Job.State.EXTRACTINGTHUMBNAIL);
 			// 로컬에 복사된 파일로부터 이미지를 추출한다.
 			List<File> thumbnails = extractThumbnail(multimediaFile, thumbnailExtractor);
 
 
-			changeState(Job.State.STORING);
 			// 변환된 결과 파일과 썸네일 이미지를 목적지에 저장한다.
 			storeCreatedFilesToDestination(multimediaFiles, thumbnails);
 
-			changeState(Job.State.NOTIFYING);
 			// 결과를 통지한다.
 			notifyJobResultToRequester(jobResultNotifier);
-			changeState(Job.State.COMPLETED);
+
+			completed();
 		} catch (RuntimeException ex) {
 			exceptionOccured(ex);
 			throw ex;
@@ -102,22 +98,31 @@ public class Job {
 	}
 
 	private File copyMultimediaSourceToLocal() {
+		changeState(State.MEDIASOURCECOPYING);
 		return mediaSourceFile.getSourceFile();
 	}
 
 	private List<File> transcode(File mediaFile, Transcoder transcoder) {
+		changeState(Job.State.TRANSCODING);
 		return transcoder.transcode(mediaFile, id);
 	}
 
-	private void notifyJobResultToRequester(JobResultNotifier jobResultNotifier) {
-		jobResultNotifier.notifyToRequest(id);
+	private List<File> extractThumbnail(File multimediaFile, ThumbnailExtractor thumbnailExtractor) {
+		changeState(Job.State.EXTRACTINGTHUMBNAIL);
+		return thumbnailExtractor.extract(multimediaFile, id);
 	}
 
 	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails) {
+		changeState(Job.State.STORING);
 		destinationStorage.save(multimediaFiles, thumbnails);
 	}
 
-	private List<File> extractThumbnail(File multimediaFile, ThumbnailExtractor thumbnailExtractor) {
-		return thumbnailExtractor.extract(multimediaFile, id);
+	private void notifyJobResultToRequester(JobResultNotifier jobResultNotifier) {
+		changeState(Job.State.NOTIFYING);
+		jobResultNotifier.notifyToRequest(id);
+	}
+
+	private void completed() {
+		changeState(Job.State.COMPLETED);
 	}
 }
