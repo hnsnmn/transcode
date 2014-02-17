@@ -50,16 +50,21 @@ public class TranscodingServiceTest {
 	private JobStateChanger jobStateChanger;
 	@Mock
 	private TranscodingExceptionHandler transcodingExceptionHandler;
+	@Mock
+	private MediaSourceFile mediaSourceFile;
 
 	private TranscodingService transcodingService;
-	private Job mockJob = new Job(jobId);
+	private Job mockJob;
 
 	@Before
 	public void setUp() {
 //		mediaSourceCopier = mock(MediaSourceCopier.class);
 		MockitoAnnotations.initMocks(this);
-		transcodingService = new TranscodingServiceImpl(mediaSourceCopier,
-				jobResultNotifier,
+
+		mockJob = new Job(jobId, mediaSourceFile);
+		when(mediaSourceFile.getSourceFile()).thenReturn(mockMultimediaFile);
+
+		transcodingService = new TranscodingServiceImpl(jobResultNotifier,
 				createdFileSender,
 				thumbnailExtractor,
 				transcoder,
@@ -69,7 +74,7 @@ public class TranscodingServiceTest {
 	@Test
 	public void transcodeSuccessfully() {
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
-		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
+		
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 
@@ -88,9 +93,9 @@ public class TranscodingServiceTest {
 	}
 
 	@Test
-	public void transcodeFailBecauseExceptionOccuredAtMediaSourceCopier() {
+	public void transcodeFailBecauseExceptionOccuredAtMediaSourceFile() {
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
-		when(mediaSourceCopier.copy(jobId)).thenThrow(mockException);
+		when(mediaSourceFile.getSourceFile()).thenThrow(mockException);
 
 		excuteFailingTranscodeAndAssertFail(Job.State.MEDIASOURCECOPYING);
 
@@ -104,7 +109,6 @@ public class TranscodingServiceTest {
 
 	@Test
 	public void transcodeFailBecuaseExceptionOccuredAtTranscode() {
-		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenThrow(mockException);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 
@@ -119,7 +123,6 @@ public class TranscodingServiceTest {
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtThumbnailExtractor() {
-		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenThrow(mockException);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
@@ -134,7 +137,6 @@ public class TranscodingServiceTest {
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtCreatedFileSender() {
-		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
@@ -150,7 +152,6 @@ public class TranscodingServiceTest {
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtJobResultNotifier() {
-		when(mediaSourceCopier.copy(jobId)).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, jobId)).thenReturn(mockMultimediaFiles);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
@@ -181,7 +182,7 @@ public class TranscodingServiceTest {
 	}
 
 	private void verifyCollaboration(VerifyOptions verifyOption) {
-		verify(mediaSourceCopier, only()).copy(jobId);
+//		verify(mediaSourceCopier, only()).copy(jobId);
 
 		if (verifyOption.transcoderNever)
 			verify(transcoder, never()).transcode(any(File.class), anyLong());

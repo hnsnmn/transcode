@@ -18,8 +18,11 @@ public class Job {
 
 	private Exception occurredException;
 
-	public Job(Long id) {
+	private MediaSourceFile mediaSourceFile;
+
+	public Job(Long id, MediaSourceFile mediaSourceFile) {
 		this.id = id;
+		this.mediaSourceFile = mediaSourceFile;
 	}
 
 	public Exception getOccuredException() {
@@ -56,17 +59,20 @@ public class Job {
 
 	public static enum State {
 		COMPLETED,
-		MEDIASOURCECOPYING, TRANSCODING, EXTRACTINGTHUMBNAIL, STORING, NOTIFYING;
+		MEDIASOURCECOPYING,
+		TRANSCODING,
+		EXTRACTINGTHUMBNAIL,
+		STORING,
+		NOTIFYING;
 
 	}
 
-	public void transcode(MediaSourceCopier mediaSourceCopier,
-						  Transcoder transcoder, ThumbnailExtractor thumbnailExtractor,
+	public void transcode( Transcoder transcoder, ThumbnailExtractor thumbnailExtractor,
 						  CreatedFileSender createdFileSender, JobResultNotifier jobResultNotifier) {
 		try {
 			changeState(State.MEDIASOURCECOPYING);
 			// 미디어 원본으로부터 파일을 로컬에 복사한다.
-			File multimediaFile = copyMultimediaSourceToLocal(mediaSourceCopier);
+			File multimediaFile = copyMultimediaSourceToLocal();
 
 
 			changeState(Job.State.TRANSCODING);
@@ -93,8 +99,8 @@ public class Job {
 
 	}
 
-	private File copyMultimediaSourceToLocal(MediaSourceCopier mediaSourceCopier) {
-		return mediaSourceCopier.copy(id);
+	private File copyMultimediaSourceToLocal() {
+		return mediaSourceFile.getSourceFile();
 	}
 
 	private List<File> transcode(File mediaFile, Transcoder transcoder) {

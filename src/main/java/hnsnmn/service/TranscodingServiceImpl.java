@@ -10,20 +10,17 @@ import hnsnmn.*;
  * To change this template use File | Settings | File Templates.
  */
 public class TranscodingServiceImpl implements TranscodingService {
-	private MediaSourceCopier mediaSourceCopier;
 	private JobResultNotifier jobResultNotifier;
 	private CreatedFileSender createdFileSender;
 	private ThumbnailExtractor thumbnailExtractor;
 	private Transcoder transcoder;
 	private JobRepository jobRepository;
 
-	public TranscodingServiceImpl(MediaSourceCopier mediaSourceCopier,
-								  JobResultNotifier jobResultNotifier,
+	public TranscodingServiceImpl(JobResultNotifier jobResultNotifier,
 								  CreatedFileSender createdFileSender,
 								  ThumbnailExtractor thumbnailExtractor,
 								  Transcoder transcoder,
 								  JobRepository jobRepository) {
-		this.mediaSourceCopier = mediaSourceCopier;
 		this.jobResultNotifier = jobResultNotifier;
 		this.createdFileSender = createdFileSender;
 		this.thumbnailExtractor = thumbnailExtractor;
@@ -34,7 +31,7 @@ public class TranscodingServiceImpl implements TranscodingService {
 	@Override
 	public void transcode(Long jobId) {
 		Job job = jobRepository.findById(jobId);
-		job.transcode(mediaSourceCopier, transcoder, thumbnailExtractor, createdFileSender, jobResultNotifier);
+		job.transcode(transcoder, thumbnailExtractor, createdFileSender, jobResultNotifier);
 	}
 
 //	private void changeJobState(Long jobId, Job.State newJobState) {
