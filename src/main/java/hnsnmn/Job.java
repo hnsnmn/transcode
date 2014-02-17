@@ -70,7 +70,7 @@ public class Job {
 	}
 
 	public void transcode( Transcoder transcoder, ThumbnailExtractor thumbnailExtractor,
-						  CreatedFileSender createdFileSender, JobResultNotifier jobResultNotifier) {
+						  JobResultNotifier jobResultNotifier) {
 		try {
 			changeState(State.MEDIASOURCECOPYING);
 			// 미디어 원본으로부터 파일을 로컬에 복사한다.
@@ -88,7 +88,7 @@ public class Job {
 
 			changeState(Job.State.STORING);
 			// 변환된 결과 파일과 썸네일 이미지를 목적지에 저장한다.
-			storeCreatedFilesToDestination(multimediaFiles, thumbnails, createdFileSender);
+			storeCreatedFilesToDestination(multimediaFiles, thumbnails);
 
 			changeState(Job.State.NOTIFYING);
 			// 결과를 통지한다.
@@ -113,7 +113,7 @@ public class Job {
 		jobResultNotifier.notifyToRequest(id);
 	}
 
-	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails, CreatedFileSender createdFileSender) {
+	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails) {
 		destinationStorage.save(multimediaFiles, thumbnails);
 	}
 
