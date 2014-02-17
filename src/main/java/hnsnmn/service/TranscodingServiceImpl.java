@@ -17,12 +17,10 @@ public class TranscodingServiceImpl implements TranscodingService {
 	private JobRepository jobRepository;
 
 	public TranscodingServiceImpl(JobResultNotifier jobResultNotifier,
-								  CreatedFileSender createdFileSender,
 								  ThumbnailExtractor thumbnailExtractor,
 								  Transcoder transcoder,
 								  JobRepository jobRepository) {
 		this.jobResultNotifier = jobResultNotifier;
-		this.createdFileSender = createdFileSender;
 		this.thumbnailExtractor = thumbnailExtractor;
 		this.transcoder = transcoder;
 		this.jobRepository = jobRepository;
@@ -31,7 +29,7 @@ public class TranscodingServiceImpl implements TranscodingService {
 	@Override
 	public void transcode(Long jobId) {
 		Job job = jobRepository.findById(jobId);
-		job.transcode(transcoder, thumbnailExtractor, createdFileSender, jobResultNotifier);
+		job.transcode(transcoder, thumbnailExtractor, jobResultNotifier);
 	}
 
 //	private void changeJobState(Long jobId, Job.State newJobState) {
