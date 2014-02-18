@@ -32,16 +32,29 @@ public class FfmpegTranscoderTest {
 	@Test
 	public void transcodeWithOneOuputFormmat() {
 		File multimediaFile = new File("src/test/resources/sample.avi");
-		List<OutputFormat> outputFormmats = new ArrayList<OutputFormat>();
-		outputFormmats.add(new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4, VideoCodec.H264, AudioCodec.AAC));
-		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormmats);
+		List<OutputFormat> outputFormats = new ArrayList<OutputFormat>();
+		outputFormats.add(new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4,
+				VideoCodec.H264, AudioCodec.AAC));
 
+		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormats);
 		assertEquals(1, transcodedFiles.size());
 		assertTrue(transcodedFiles.get(0).exists());
-		VideoFormatVerifier.verifyVideoFormat(outputFormmats.get(0), transcodedFiles.get(0));
-//		verifyTranscodedFile(outputFormmats.get(0), transcodedFiles.get(0));
+		VideoFormatVerifier.verifyVideoFormat(outputFormats.get(0), transcodedFiles.get(0));
+//		verifyTranscodedFile(outputFormats.get(0), transcodedFiles.get(0));
 	}
 
+	@Test
+	public void transcodeWithOneAviOutputFormat() {
+		File multimediaFile = new File("src/test/resources/sample.avi");
+		List<OutputFormat> outputFormats = new ArrayList<OutputFormat>();
+		outputFormats.add(new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.AVI,
+				VideoCodec.MPEG4, AudioCodec.MP3));
+
+		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormats);
+		assertEquals(1, transcodedFiles.size());
+		assertTrue(transcodedFiles.get(0).exists());
+		VideoFormatVerifier.verifyVideoFormat(outputFormats.get(0), transcodedFiles.get(0));
+	}
 //	private void verifyTranscodedFile(OutputFormat outputFormmat, File file) {
 //		IContainer container = IContainer.make();
 //		int openResult = container.open(file.getAbsolutePath(), IContainer.Type.READ, null);
