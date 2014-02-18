@@ -6,6 +6,7 @@ import hnsnmn.domain.job.Container;
 import hnsnmn.domain.job.OutputFormat;
 import hnsnmn.domain.job.AudioCodec;
 import hnsnmn.domain.job.VideoCodec;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,31 +26,39 @@ public class VedioConverterTest {
 	public static final int HEIGHT = 120;
 	public static final int BITRATE = 150;
 	public static final String TRANSCODED_FILE = "target/sample.mp4";
+	private IMediaReader reader;
+	private OutputFormat outputFormat;
+	private String outputFile;
+
+	@Before
+	public void setUp() {
+		reader = ToolFactory.makeReader(SOURCE_FILE);
+	}
 
 	@Test
 	public void transcode() {
-		IMediaReader reader = ToolFactory.makeReader(SOURCE_FILE);
-		OutputFormat outputFormmat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4, VideoCodec.H264, AudioCodec.AAC);
-		VideoConverter writer = new VideoConverter(TRANSCODED_FILE, reader, outputFormmat);
+		outputFile = TRANSCODED_FILE;
+		outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4, VideoCodec.H264, AudioCodec.AAC);
+
+		testVideoConverter();
+	}
+
+	private void testVideoConverter() {
+		VideoConverter writer = new VideoConverter(outputFile, reader, outputFormat);
 		reader.addListener(writer);
 		while(reader.readPacket() == null) {
 			do {
 			} while(false);
 		}
 
-		VideoFormatVerifier.verifyVideoFormat(outputFormmat, new File(TRANSCODED_FILE));
+		VideoFormatVerifier.verifyVideoFormat(outputFormat, new File(outputFile));
 	}
 
 	@Test
 	public void transcodeWithOnlyContainer() {
-		IMediaReader reader = ToolFactory.makeReader(SOURCE_FILE);
-		OutputFormat outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.AVI);
-		VideoConverter writer = new VideoConverter("target/sample.avi", reader, outputFormat);
-		reader.addListener(writer);
-		while (reader.readPacket() == null) {
-			do {
-			} while (false);
-		}
-		VideoFormatVerifier.verifyVideoFormat(outputFormat, new File("target/sample.avi"));
+		outputFile = "target/sample.avi";
+		outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.AVI);
+
+		testVideoConverter();
 	}
 }
