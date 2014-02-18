@@ -2,7 +2,7 @@ package hnsnmn.infra.ffmpeg;
 
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.ToolFactory;
-import hnsnmn.OutputFormat;
+import hnsnmn.domain.job.OutputFormat;
 import hnsnmn.domain.job.AudioCodec;
 import hnsnmn.domain.job.VideoCodec;
 import org.junit.Test;
