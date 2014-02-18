@@ -1,5 +1,8 @@
 package hnsnmn.infra.ffmpeg;
 
+import com.xuggle.mediatool.IMediaReader;
+import com.xuggle.mediatool.IMediaWriter;
+import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.*;
 import org.junit.Test;
 
@@ -50,6 +53,18 @@ public class XuggleTest {
 			System.out.printf("\n");
 		}
 		container.close();
+	}
+
+	@Test
+	public void transcode() {
+		IMediaReader reader = ToolFactory.makeReader("src/test/resources/sample.avi");
+
+		IMediaWriter writer = ToolFactory.makeWriter("target/sameple.mp4", reader);
+		reader.addListener(writer);
+		while (reader.readPacket() == null) {
+			do {
+			} while (false);
+		}
 	}
 
 }
