@@ -1,7 +1,7 @@
-package hnsnmn.service;
+package hnsnmn.domain.job;
 
 
-import hnsnmn.Job;
+import hnsnmn.domain.job.Job;
 
 /**
  * Created with IntelliJ IDEA.

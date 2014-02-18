@@ -1,6 +1,6 @@
-package hnsnmn.service;
+package hnsnmn.application.transcode;
 
-import hnsnmn.*;
+import hnsnmn.domain.job.*;
 
 /**
  * Created with IntelliJ IDEA.

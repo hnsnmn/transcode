@@ -1,4 +1,4 @@
-package hnsnmn;
+package hnsnmn.domain.job;
 
 import java.io.File;
 

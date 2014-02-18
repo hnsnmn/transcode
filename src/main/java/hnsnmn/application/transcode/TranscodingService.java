@@ -1,4 +1,4 @@
-package hnsnmn;
+package hnsnmn.application.transcode;
 
 /**
  * Created with IntelliJ IDEA.

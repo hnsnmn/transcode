@@ -1,12 +1,12 @@
-package hnsnmn;
+package hnsnmn.domain.job;
 
 /**
  * Created with IntelliJ IDEA.
  * User: hongseongmin
  * Date: 2014. 2. 12.
- * Time: 오후 3:39
+ * Time: 오후 6:08
  * To change this template use File | Settings | File Templates.
  */
-public interface JobResultNotifier {
-	void notifyToRequest(Long jobId);
+public interface JobRepository {
+	Job findById(Long jobId);
 }

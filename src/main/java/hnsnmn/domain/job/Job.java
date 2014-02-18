@@ -1,4 +1,4 @@
-package hnsnmn;
+package hnsnmn.domain.job;
 
 import java.io.File;
 import java.util.List;
@@ -20,11 +20,13 @@ public class Job {
 	private MediaSourceFile mediaSourceFile;
 
 	private DestinationStorage destinationStorage;
+	private List<OutputFormat> outputFormmat;
 
-	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage) {
+	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats) {
 		this.id = id;
 		this.mediaSourceFile = mediaSourceFile;
 		this.destinationStorage = destinationStorage;
+		this.outputFormmat = outputFormmats;
 	}
 
 	public Exception getOccuredException() {
@@ -104,7 +106,7 @@ public class Job {
 
 	private List<File> transcode(File mediaFile, Transcoder transcoder) {
 		changeState(Job.State.TRANSCODING);
-		return transcoder.transcode(mediaFile, id);
+		return transcoder.transcode(mediaFile, outputFormmat);
 	}
 
 	private List<File> extractThumbnail(File multimediaFile, ThumbnailExtractor thumbnailExtractor) {

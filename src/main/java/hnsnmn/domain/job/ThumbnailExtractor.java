@@ -1,4 +1,4 @@
-package hnsnmn;
+package hnsnmn.domain.job;
 
 import java.io.File;
 import java.util.List;
@@ -6,10 +6,10 @@ import java.util.List;
 /**
  * Created with IntelliJ IDEA.
  * User: hongseongmin
- * Date: 2014. 2. 17.
- * Time: 오후 9:53
+ * Date: 2014. 2. 12.
+ * Time: 오후 3:10
  * To change this template use File | Settings | File Templates.
  */
-public interface DestinationStorage {
-	void save(List<File> multimediaFiles, List<File> thumbnails);
+public interface ThumbnailExtractor {
+	List<File> extract(File mockMultimediaFile, Long jobId);
 }

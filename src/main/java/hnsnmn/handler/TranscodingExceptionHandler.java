@@ -1,4 +1,4 @@
-package hnsnmn.service;
+package hnsnmn.handler;
 
 /**
  * Created with IntelliJ IDEA.
