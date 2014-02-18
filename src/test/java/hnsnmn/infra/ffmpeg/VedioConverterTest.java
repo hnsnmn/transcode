@@ -2,6 +2,7 @@ package hnsnmn.infra.ffmpeg;
 
 import com.xuggle.mediatool.IMediaReader;
 import com.xuggle.mediatool.ToolFactory;
+import hnsnmn.domain.job.Container;
 import hnsnmn.domain.job.OutputFormat;
 import hnsnmn.domain.job.AudioCodec;
 import hnsnmn.domain.job.VideoCodec;
@@ -28,7 +29,7 @@ public class VedioConverterTest {
 	@Test
 	public void transcode() {
 		IMediaReader reader = ToolFactory.makeReader(SOURCE_FILE);
-		OutputFormat outputFormmat = new OutputFormat(WIDTH, HEIGHT, BITRATE, VideoCodec.H264, AudioCodec.AAC);
+		OutputFormat outputFormmat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4, VideoCodec.H264, AudioCodec.AAC);
 		VideoConverter writer = new VideoConverter(TRANSCODED_FILE, reader, outputFormmat);
 		reader.addListener(writer);
 		while(reader.readPacket() == null) {

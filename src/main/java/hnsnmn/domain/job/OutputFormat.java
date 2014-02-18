@@ -11,14 +11,16 @@ public class OutputFormat {
 	private int width;
 	private int height;
 	private int bitrate;
+
 	private VideoCodec videoCodec;
 	private AudioCodec audioCodec;
-	private String fileExtenstion;
+	private Container container;
 
-	public OutputFormat(int width, int height, int bitrate, VideoCodec videoCodec, AudioCodec audioCodec) {
+	public OutputFormat(int width, int height, int bitrate, Container container, VideoCodec videoCodec, AudioCodec audioCodec) {
 		this.width = width;
 		this.height = height;
 		this.bitrate = bitrate;
+		this.container = container;
 		this.videoCodec = videoCodec;
 		this.audioCodec = audioCodec;
 	}
@@ -48,10 +50,7 @@ public class OutputFormat {
 	}
 
 	public String getFileExtension() {
-		return "mp4"; // 일단 테스트가 통과하도록 지정
-	}
-
-	public void setFileExtenstion(String fileExtenstion) {
-		this.fileExtenstion = fileExtenstion;
+//		return "mp4"; // 일단 테스트가 통과하도록 지정
+		return container.getFileExtension();
 	}
 }

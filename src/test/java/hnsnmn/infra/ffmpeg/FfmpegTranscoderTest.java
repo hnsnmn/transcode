@@ -1,9 +1,6 @@
 package hnsnmn.infra.ffmpeg;
 
-import hnsnmn.domain.job.AudioCodec;
-import hnsnmn.domain.job.OutputFormat;
-import hnsnmn.domain.job.Transcoder;
-import hnsnmn.domain.job.VideoCodec;
+import hnsnmn.domain.job.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +19,9 @@ import static org.junit.Assert.assertEquals;
  * To change this template use File | Settings | File Templates.
  */
 public class FfmpegTranscoderTest {
+	public static final int WIDTH = 640;
+	public static final int HEIGHT = 480;
+	public static final int BITRATE = 300;
 	private Transcoder transcoder;
 
 	@Before
@@ -33,7 +33,7 @@ public class FfmpegTranscoderTest {
 	public void transcodeWithOneOuputFormmat() {
 		File multimediaFile = new File("src/test/resources/sample.avi");
 		List<OutputFormat> outputFormmats = new ArrayList<OutputFormat>();
-		outputFormmats.add(new OutputFormat(640, 480, 300, VideoCodec.H264, AudioCodec.AAC));
+		outputFormmats.add(new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4, VideoCodec.H264, AudioCodec.AAC));
 		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormmats);
 
 		assertEquals(1, transcodedFiles.size());
