@@ -23,71 +23,51 @@ public class FfmpegTranscoderTest {
 	public static final int HEIGHT = 480;
 	public static final int BITRATE = 300;
 	private Transcoder transcoder;
+	private File multimediaFile;
+	private List<OutputFormat> outputFormats;
+
+	private OutputFormat mp4Format;
+	private OutputFormat mp4Format2;
+	private OutputFormat aviFormat;
 
 	@Before
 	public void setUp() {
-		transcoder = new FfmpegTranscoder();
+		transcoder = new FfmpegTranscoder(NamingRule.DEFAULT);
+		multimediaFile = new File("src/test/resources/sample.avi");
+		outputFormats = new ArrayList<OutputFormat>();
+		mp4Format = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4,
+				VideoCodec.H264, AudioCodec.AAC);
+		mp4Format2 = new OutputFormat(80, 60, 80, Container.MP4,
+				VideoCodec.H264, AudioCodec.AAC);
+		aviFormat = new OutputFormat(80, 60, 80, Container.AVI,
+				VideoCodec.MPEG4, AudioCodec.MP3);
 	}
 
 	@Test
-	public void transcodeWithOneOuputFormmat() {
-		File multimediaFile = new File("src/test/resources/sample.avi");
-		List<OutputFormat> outputFormats = new ArrayList<OutputFormat>();
-		outputFormats.add(new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4,
-				VideoCodec.H264, AudioCodec.AAC));
-
-		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormats);
-		assertEquals(1, transcodedFiles.size());
-		assertTrue(transcodedFiles.get(0).exists());
-		VideoFormatVerifier.verifyVideoFormat(outputFormats.get(0), transcodedFiles.get(0));
-//		verifyTranscodedFile(outputFormats.get(0), transcodedFiles.get(0));
+	public void transcodeWithOneOuputFormat() {
+		outputFormats.add(mp4Format);
+		excuteTranscodeAndAssert();
 	}
 
 	@Test
 	public void transcodeWithOneAviOutputFormat() {
-		File multimediaFile = new File("src/test/resources/sample.avi");
-		List<OutputFormat> outputFormats = new ArrayList<OutputFormat>();
-		outputFormats.add(new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.AVI,
-				VideoCodec.MPEG4, AudioCodec.MP3));
-
-		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormats);
-		assertEquals(1, transcodedFiles.size());
-		assertTrue(transcodedFiles.get(0).exists());
-		VideoFormatVerifier.verifyVideoFormat(outputFormats.get(0), transcodedFiles.get(0));
+		outputFormats.add(aviFormat);
+		excuteTranscodeAndAssert();
 	}
-//	private void verifyTranscodedFile(OutputFormat outputFormmat, File file) {
-//		IContainer container = IContainer.make();
-//		int openResult = container.open(file.getAbsolutePath(), IContainer.Type.READ, null);
-//
-//		if (openResult < 0) {
-//			throw new RuntimeException("Xubbler file open failed:" + openResult);
-//		}
-//
-//		int numStreams = container.getNumStreams();
-//
-//		int width = 0;
-//		int height = 0;
-//		ICodec.ID videoCodec = null;
-//		ICodec.ID audioCodec = null;
-//
-//		for (int i = 0; i < numStreams; i++) {
-//			IStream stream = container.getStream(i);
-//			IStreamCoder coder = stream.getStreamCoder();
-//
-//			if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_AUDIO) {
-//				audioCodec = coder.getCodecID();
-//			} else if (coder.getCodecType() == ICodec.Type.CODEC_TYPE_VIDEO) {
-//				videoCodec = coder.getCodecID();
-//				width = coder.getWidth();
-//				height = coder.getHeight();
-//			}
-//		}
-//		container.close();
-//
-//		assertEquals(outputFormmat.getWidth(), width);
-//		assertEquals(outputFormmat.getHeight(), height);
-//		assertEquals(outputFormmat.getVideoCodec(), videoCodec.toString());
-//		assertEquals(outputFormmat.getAudioCodec(), audioCodec.toString());
-//	}
 
+	@Test
+	public void transcodeWithTwoMp4OutputFormats() {
+		outputFormats.add(mp4Format);
+		outputFormats.add(mp4Format2);
+		excuteTranscodeAndAssert();
+	}
+
+	private void excuteTranscodeAndAssert() {
+		List<File> transcodedFiles = transcoder.transcode(multimediaFile, outputFormats);
+		assertEquals(outputFormats.size(), transcodedFiles.size());
+		for (int i = 0; i < outputFormats.size(); i++) {
+			assertTrue(transcodedFiles.get(i).exists());
+			VideoFormatVerifier.verifyVideoFormat(outputFormats.get(i), transcodedFiles.get(i));
+		}
+	}
 }
