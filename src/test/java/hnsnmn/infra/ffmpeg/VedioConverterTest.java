@@ -25,7 +25,6 @@ public class VedioConverterTest {
 	public static final int WIDTH = 160;
 	public static final int HEIGHT = 120;
 	public static final int BITRATE = 150;
-	public static final String TRANSCODED_FILE = "target/sample.mp4";
 	private IMediaReader reader;
 	private OutputFormat outputFormat;
 	private String outputFile;
@@ -37,10 +36,27 @@ public class VedioConverterTest {
 
 	@Test
 	public void transcode() {
-		outputFile = TRANSCODED_FILE;
-		outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4, VideoCodec.H264, AudioCodec.AAC);
-
+		InitOutput("target/sample.mp4", Container.MP4, VideoCodec.H264, AudioCodec.AAC);
 		testVideoConverter();
+	}
+
+	@Test
+	public void transcodeWithOnlyContainer() {
+		InitOutput("target/sample.avi", Container.AVI);
+		testVideoConverter();
+	}
+
+	private void InitOutput(String transcodedFile, Container container, VideoCodec videoCodec, AudioCodec audioCodec) {
+		if (videoCodec == null && audioCodec == null) {
+			outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, container);
+		} else {
+			outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, container, videoCodec, audioCodec);
+		}
+		outputFile = transcodedFile;
+	}
+
+	private void InitOutput(String transcodedFile, Container container) {
+		InitOutput(transcodedFile, container, null, null);
 	}
 
 	private void testVideoConverter() {
@@ -52,13 +68,5 @@ public class VedioConverterTest {
 		}
 
 		VideoFormatVerifier.verifyVideoFormat(outputFormat, new File(outputFile));
-	}
-
-	@Test
-	public void transcodeWithOnlyContainer() {
-		outputFile = "target/sample.avi";
-		outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.AVI);
-
-		testVideoConverter();
 	}
 }
