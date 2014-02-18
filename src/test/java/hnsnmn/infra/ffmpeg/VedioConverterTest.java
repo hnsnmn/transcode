@@ -39,4 +39,17 @@ public class VedioConverterTest {
 
 		VideoFormatVerifier.verifyVideoFormat(outputFormmat, new File(TRANSCODED_FILE));
 	}
+
+	@Test
+	public void transcodeWithOnlyContainer() {
+		IMediaReader reader = ToolFactory.makeReader(SOURCE_FILE);
+		OutputFormat outputFormat = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.AVI);
+		VideoConverter writer = new VideoConverter("target/sample.avi", reader, outputFormat);
+		reader.addListener(writer);
+		while (reader.readPacket() == null) {
+			do {
+			} while (false);
+		}
+		VideoFormatVerifier.verifyVideoFormat(outputFormat, new File("target/sample.avi"));
+	}
 }
