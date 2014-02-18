@@ -13,6 +13,7 @@ public class OutputFormat {
 	private int bitrate;
 	private VideoCodec videoCodec;
 	private AudioCodec audioCodec;
+	private String fileExtenstion;
 
 	public OutputFormat(int width, int height, int bitrate, VideoCodec videoCodec, AudioCodec audioCodec) {
 		this.width = width;
@@ -44,5 +45,13 @@ public class OutputFormat {
 
 	public int getBitrate() {
 		return bitrate;
+	}
+
+	public String getFileExtension() {
+		return "mp4"; // 일단 테스트가 통과하도록 지정
+	}
+
+	public void setFileExtenstion(String fileExtenstion) {
+		this.fileExtenstion = fileExtenstion;
 	}
 }

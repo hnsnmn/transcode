@@ -38,12 +38,24 @@ public class VideoFormatVerifier {
 
 	private void verify() {
 		try {
+			assertExtension();
 			makeContainer();
 			extractMetaInfoOfVideo();
 			assertVideoFile();
 		} finally {
 			closeContainer();
 		}
+	}
+
+	private void assertExtension() {
+		assertEquals(expectedFormat.getFileExtension(), fileExtensiton());
+	}
+
+	private String fileExtensiton() {
+		String filePath = videoFile.getAbsolutePath();
+		int lastDotIdx = filePath.lastIndexOf(".");
+		String extension = filePath.substring(lastDotIdx + 1);
+		return extension;
 	}
 
 	private void makeContainer() {
