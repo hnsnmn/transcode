@@ -1,7 +1,6 @@
 package hnsnmn.application.transcode;
 
 import hnsnmn.domain.job.*;
-import hnsnmn.domain.job.JobStateChanger;
 import hnsnmn.handler.TranscodingExceptionHandler;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
@@ -28,19 +27,20 @@ import static org.mockito.Mockito.*;
  * Time: 오후 5:52
  * To change this template use File | Settings | File Templates.
  */
-public class TranscodingServiceTest {
+public class TranscodingServiceImplTest {
+	Long jobId = new Long(1);
+
 	private File mockMultimediaFile = mock(File.class);
 	private List<File> mockMultimediaFiles = new ArrayList<File>();
 	private List<File> mockThumbnails = new ArrayList<File>();
-	private List<OutputFormat> outputFormmats = new ArrayList<OutputFormat>();
 
+	private List<OutputFormat> outputFormmats = new ArrayList<OutputFormat>();
 	private final RuntimeException mockException = new RuntimeException();
-	Long jobId = new Long(1);
+
 	@Mock private MediaSourceCopier mediaSourceCopier;
 	@Mock private Transcoder transcoder;
 	@Mock private ThumbnailExtractor thumbnailExtractor;
 	@Mock private CreatedFileSender createdFileSender;
-	@Mock private JobResultNotifier jobResultNotifier;
 	@Mock private JobRepository jobRepository;
 	@Mock private JobStateChanger jobStateChanger;
 	@Mock private TranscodingExceptionHandler transcodingExceptionHandler;
@@ -76,7 +76,8 @@ public class TranscodingServiceTest {
 		assertTrue(job.isFinish());
 		assertTrue(job.isSuccess());
 		assertEquals(Job.State.COMPLETED, job.getLastState());
-		assertNull(job.getOccuredException());
+		assertFalse(job.isExceptionOccured());
+		assertNull(job.getExceptionMessage());
 
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
 		collaborationVerifier.verifyCollaboration();
@@ -128,16 +129,6 @@ public class TranscodingServiceTest {
 		collaborationVerifier.verifyCollaboration();
 	}
 
-	@Test
-	public void transcodeFailBecauseExceptionOccuredAtJobResultNotifier() {
-		doThrow(mockException).when(jobResultNotifier).notifyToRequest(jobId);
-
-
-		excuteFailingTranscodeAndAssertFail(Job.State.NOTIFYING);
-
-		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
-		collaborationVerifier.verifyCollaboration();
-	}
 
 	private void excuteFailingTranscodeAndAssertFail(Job.State expected) {
 		Exception throwEx = null;
@@ -152,7 +143,8 @@ public class TranscodingServiceTest {
 		assertTrue(job.isFinish());
 		assertFalse(job.isSuccess());
 		assertEquals(expected, job.getLastState());
-		assertNotNull(job.getOccuredException());
+		assertTrue(job.isExceptionOccured());
+		assertNotNull(job.getExceptionMessage());
 	}
 
 
