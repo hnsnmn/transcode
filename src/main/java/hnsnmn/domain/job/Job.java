@@ -35,8 +35,8 @@ public class Job {
 		this.callback = callback;
 	}
 
-	public Exception getOccuredException() {
-		return occurredException;
+	public String getExceptionMessage() {
+		return exceptionMessage;
 	}
 
 	public boolean isWaiting() {
@@ -48,7 +48,7 @@ public class Job {
 	}
 
 	private boolean isExceptionOccurred() {
-		return occurredException != null;
+		return exceptionMessage != null;
 	}
 
 	public boolean isSuccess() {
@@ -66,6 +66,10 @@ public class Job {
 	private void exceptionOccured(RuntimeException ex) {
 		exceptionMessage = ExceptionMessageUtil.getMessage(ex);
 		callback.notifyFailedResult(id, state, exceptionMessage);
+	}
+
+	public boolean isExceptionOccured() {
+		return exceptionMessage != null;
 	}
 
 	public static enum State {
