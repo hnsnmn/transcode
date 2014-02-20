@@ -36,27 +36,18 @@ public class TranscodingServiceTest {
 
 	private final RuntimeException mockException = new RuntimeException();
 	Long jobId = new Long(1);
-	@Mock
-	private MediaSourceCopier mediaSourceCopier;
-	@Mock
-	private Transcoder transcoder;
-	@Mock
-	private ThumbnailExtractor thumbnailExtractor;
-	@Mock
-	private CreatedFileSender createdFileSender;
-	@Mock
-	private JobResultNotifier jobResultNotifier;
-	@Mock
-	private JobRepository jobRepository;
-	@Mock
-	private JobStateChanger jobStateChanger;
-	@Mock
-	private TranscodingExceptionHandler transcodingExceptionHandler;
-	@Mock
-	private MediaSourceFile mediaSourceFile;
-	@Mock
-	private DestinationStorage destinationStorage;
+	@Mock private MediaSourceCopier mediaSourceCopier;
+	@Mock private Transcoder transcoder;
+	@Mock private ThumbnailExtractor thumbnailExtractor;
+	@Mock private CreatedFileSender createdFileSender;
+	@Mock private JobResultNotifier jobResultNotifier;
+	@Mock private JobRepository jobRepository;
+	@Mock private JobStateChanger jobStateChanger;
+	@Mock private TranscodingExceptionHandler transcodingExceptionHandler;
+	@Mock private MediaSourceFile mediaSourceFile;
+	@Mock private ResultCallback callback;
 
+	@Mock private DestinationStorage destinationStorage;
 	private TranscodingService transcodingService;
 	private Job mockJob;
 
@@ -65,14 +56,13 @@ public class TranscodingServiceTest {
 //		mediaSourceCopier = mock(MediaSourceCopier.class);
 		MockitoAnnotations.initMocks(this);
 
-		mockJob = new Job(jobId, mediaSourceFile, destinationStorage, outputFormmats);
+		mockJob = new Job(jobId, mediaSourceFile, destinationStorage, outputFormmats, callback);
 		when(mediaSourceFile.getSourceFile()).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, outputFormmats)).thenReturn(mockMultimediaFiles);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
 		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
 
-		transcodingService = new TranscodingServiceImpl(jobResultNotifier,
-				thumbnailExtractor,
+		transcodingService = new TranscodingServiceImpl( thumbnailExtractor,
 				transcoder,
 				jobRepository);
 	}
@@ -102,7 +92,6 @@ public class TranscodingServiceTest {
 		collaborationVerifier.transcoderNever = true;
 		collaborationVerifier.thumbnailExtractorNever = true;
 		collaborationVerifier.destinationStorageNever = true;
-		collaborationVerifier.jobResultNotifierNever = true;
 		collaborationVerifier.verifyCollaboration();
 	}
 
@@ -115,7 +104,6 @@ public class TranscodingServiceTest {
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
 		collaborationVerifier.thumbnailExtractorNever = true;
 		collaborationVerifier.destinationStorageNever = true;
-		collaborationVerifier.jobResultNotifierNever = true;
 		collaborationVerifier.verifyCollaboration();
 	}
 
@@ -127,7 +115,6 @@ public class TranscodingServiceTest {
 
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
 		collaborationVerifier.destinationStorageNever = true;
-		collaborationVerifier.jobResultNotifierNever = true;
 		collaborationVerifier.verifyCollaboration();
 	}
 
@@ -138,7 +125,6 @@ public class TranscodingServiceTest {
 		excuteFailingTranscodeAndAssertFail(Job.State.STORING);
 
 		CollaborationVerifier collaborationVerifier = new CollaborationVerifier();
-		collaborationVerifier.jobResultNotifierNever = true;
 		collaborationVerifier.verifyCollaboration();
 	}
 
@@ -173,7 +159,6 @@ public class TranscodingServiceTest {
 	private class CollaborationVerifier {
 		public boolean transcoderNever;
 		public boolean thumbnailExtractorNever;
-		public boolean jobResultNotifierNever;
 		public boolean destinationStorageNever;
 
 		public void verifyCollaboration() {
@@ -193,11 +178,6 @@ public class TranscodingServiceTest {
 				verify(destinationStorage, never()).save(mockMultimediaFiles, mockThumbnails);
 			else
 				verify(destinationStorage, only()).save(mockMultimediaFiles, mockThumbnails);
-
-			if (this.jobResultNotifierNever)
-				verify(jobResultNotifier, never()).notifyToRequest(jobId);
-			else
-				verify(jobResultNotifier, only()).notifyToRequest(jobId);
 
 		}
 	}
