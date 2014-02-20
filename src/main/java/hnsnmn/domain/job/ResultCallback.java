@@ -1,5 +1,7 @@
 package hnsnmn.domain.job;
 
+import static hnsnmn.domain.job.Job.State;
+
 /**
  * Created with IntelliJ IDEA.
  * User: hongseongmin
@@ -9,5 +11,5 @@ package hnsnmn.domain.job;
  */
 public interface ResultCallback {
 	void notifySuccessResult(Long id);
-	void notifyFailedResult(long jobId, Job.State mediasourcecopying, String exception);
+	void notifyFailedResult(long jobId, State state, String exception);
 }
