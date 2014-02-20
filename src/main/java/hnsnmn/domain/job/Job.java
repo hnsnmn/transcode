@@ -1,5 +1,7 @@
 package hnsnmn.domain.job;
 
+import hnsnmn.infra.persistence.ExceptionMessageUtil;
+
 import java.io.File;
 import java.util.List;
 
@@ -22,6 +24,8 @@ public class Job {
 
 	private List<OutputFormat> outputFormmat;
 	private ResultCallback callback;
+
+	private String exceptionMessage;
 
 	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats, ResultCallback callback) {
 		this.id = id;
@@ -60,7 +64,8 @@ public class Job {
 	}
 
 	private void exceptionOccured(RuntimeException ex) {
-		occurredException = ex;
+		exceptionMessage = ExceptionMessageUtil.getMessage(ex);
+		callback.notifyFailedResult(id, state, exceptionMessage);
 	}
 
 	public static enum State {
