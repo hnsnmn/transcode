@@ -14,19 +14,21 @@ public class Job {
 
 	private Long id;
 	private State state;
-
 	private Exception occurredException;
 
 	private MediaSourceFile mediaSourceFile;
 
 	private DestinationStorage destinationStorage;
-	private List<OutputFormat> outputFormmat;
 
-	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats) {
+	private List<OutputFormat> outputFormmat;
+	private ResultCallback callback;
+
+	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats, ResultCallback callback) {
 		this.id = id;
 		this.mediaSourceFile = mediaSourceFile;
 		this.destinationStorage = destinationStorage;
 		this.outputFormmat = outputFormmats;
+		this.callback = callback;
 	}
 
 	public Exception getOccuredException() {
@@ -71,8 +73,7 @@ public class Job {
 
 	}
 
-	public void transcode( Transcoder transcoder, ThumbnailExtractor thumbnailExtractor,
-						  JobResultNotifier jobResultNotifier) {
+	public void transcode( Transcoder transcoder, ThumbnailExtractor thumbnailExtractor) {
 		try {
 			// 미디어 원본으로부터 파일을 로컬에 복사한다.
 			File multimediaFile = copyMultimediaSourceToLocal();
@@ -89,7 +90,7 @@ public class Job {
 			storeCreatedFilesToDestination(multimediaFiles, thumbnails);
 
 			// 결과를 통지한다.
-			notifyJobResultToRequester(jobResultNotifier);
+			notifyJobResultToRequester();
 
 			completed();
 		} catch (RuntimeException ex) {
@@ -119,12 +120,13 @@ public class Job {
 		destinationStorage.save(multimediaFiles, thumbnails);
 	}
 
-	private void notifyJobResultToRequester(JobResultNotifier jobResultNotifier) {
+	private void notifyJobResultToRequester() {
 		changeState(Job.State.NOTIFYING);
-		jobResultNotifier.notifyToRequest(id);
+		callback.notifySuccessResult(id);
 	}
 
 	private void completed() {
 		changeState(Job.State.COMPLETED);
 	}
+
 }
