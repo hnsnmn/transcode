@@ -16,11 +16,8 @@ public class MediaSourceFileFactoryDefaultTest {
 	@Test
 	public void createLocalStorageMediaSourceFile() {
 		MediaSourceFileFactory factory = MediaSourceFileFactory.DEFAULT;
-		MediaSourceFile sourceFile = factory.create("file://./src/test/resource/sample.avi");
+		MediaSourceFile sourceFile = factory.create("file://./src/test/resources/sample.avi");
 		assertTrue(sourceFile instanceof LocalStorageMediaSourceFile);
 		assertTrue(sourceFile.getSourceFile().exists());
-	}
-
-	private class LocalStorageMediaSourceFile {
 	}
 }
