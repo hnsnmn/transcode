@@ -35,6 +35,10 @@ public class Job {
 		this.callback = callback;
 	}
 
+	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats) {
+		this(null, mediaSourceFile, destinationStorage, outputFormats, null);
+	}
+
 	public String getExceptionMessage() {
 		return exceptionMessage;
 	}
@@ -70,6 +74,10 @@ public class Job {
 
 	public boolean isExceptionOccured() {
 		return exceptionMessage != null;
+	}
+
+	public Long getId() {
+		return id;
 	}
 
 	public static enum State {
