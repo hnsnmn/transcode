@@ -1,7 +1,4 @@
-package hnsnmn.application.transcode;
-
-import hnsnmn.domain.job.LocalStorageMediaSourceFile;
-import hnsnmn.domain.job.MediaSourceFile;
+package hnsnmn.domain.job;
 
 /**
  * Created with IntelliJ IDEA.
