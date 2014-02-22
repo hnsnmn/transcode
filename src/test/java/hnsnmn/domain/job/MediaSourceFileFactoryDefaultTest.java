@@ -1,9 +1,9 @@
 package hnsnmn.domain.job;
 
-import hnsnmn.application.transcode.MediaSourceFileFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,4 +20,12 @@ public class MediaSourceFileFactoryDefaultTest {
 		assertTrue(sourceFile instanceof LocalStorageMediaSourceFile);
 		assertTrue(sourceFile.getSourceFile().exists());
 	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void createNotSupportedSource() {
+		MediaSourceFileFactory factory = MediaSourceFileFactory.DEFAULT;
+		factory.create("xxx://www.naver.com");
+		fail("must throw exception");
+	}
+
 }
