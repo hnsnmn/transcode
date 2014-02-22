@@ -13,9 +13,11 @@ import static org.junit.Assert.fail;
  * To change this template use File | Settings | File Templates.
  */
 public class MediaSourceFileFactoryDefaultTest {
+
+	private final MediaSourceFileFactory factory = MediaSourceFileFactory.DEFAULT;
+
 	@Test
 	public void createLocalStorageMediaSourceFile() {
-		MediaSourceFileFactory factory = MediaSourceFileFactory.DEFAULT;
 		MediaSourceFile sourceFile = factory.create("file://./src/test/resources/sample.avi");
 		assertTrue(sourceFile instanceof LocalStorageMediaSourceFile);
 		assertTrue(sourceFile.getSourceFile().exists());
@@ -23,7 +25,6 @@ public class MediaSourceFileFactoryDefaultTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void createNotSupportedSource() {
-		MediaSourceFileFactory factory = MediaSourceFileFactory.DEFAULT;
 		factory.create("xxx://www.naver.com");
 		fail("must throw exception");
 	}
