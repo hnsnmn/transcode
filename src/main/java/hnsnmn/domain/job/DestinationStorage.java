@@ -10,6 +10,17 @@ import java.util.List;
  * Time: 오후 9:53
  * To change this template use File | Settings | File Templates.
  */
-public interface DestinationStorage {
-	void save(List<File> multimediaFiles, List<File> thumbnails);
+public abstract class DestinationStorage {
+
+	private String url;
+
+	public DestinationStorage(String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public abstract void save(List<File> multimediaFiles, List<File> thumbnails);
 }
