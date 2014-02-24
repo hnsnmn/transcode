@@ -1,14 +1,12 @@
 package hnsnmn.application.transcode;
 
 import hnsnmn.domain.job.Job;
-import hnsnmn.domain.job.JobRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.*;
 
 /**
@@ -22,31 +20,23 @@ import static org.mockito.Mockito.*;
 public class TranscodingRunnerTest {
 
 	@Mock private TranscodingService transcodingService;
-	@Mock private JobRepository jobRepository;
 	@Mock private Job job;
+	@Mock private JobQueue jobQueue;
 
 	private TranscodingRunner runner;
 
 	@Before
 	public void setUp() throws Exception {
-		runner = new TranscodingRunner(transcodingService, jobRepository);
+		runner = new TranscodingRunner(transcodingService, jobQueue);
 	}
 
 	@Test
 	public void runTranscodingWhenJobIsExists() {
-		when(jobRepository.findEldestJobOfCreatedState()).thenReturn(job);
-		when(job.getId()).thenReturn(1L);
+		when(jobQueue.nextJobId()).thenReturn(1L).thenThrow(
+				new JobQueue.CloseException());
+
 		runner.run();
 
 		verify(transcodingService, only()).transcode(1L);
-	}
-
-	@Test
-	public void dontRunTranscodingWhenJobIsNotExists() {
-		when(jobRepository.findEldestJobOfCreatedState()).thenReturn(null);
-
-		runner.run();
-
-		verify(transcodingService, never()).transcode(anyLong());
 	}
 }
