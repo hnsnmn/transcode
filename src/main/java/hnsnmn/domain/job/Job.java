@@ -153,7 +153,7 @@ public class Job {
 		return exporter;
 	}
 
-	private static interface Exporter {
+	public static interface Exporter {
 		public void addId(Long id);
 
 		public void addState(Job.State state);
