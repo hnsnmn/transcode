@@ -1,5 +1,6 @@
 package hnsnmn.domain.job;
 
+import hnsnmn.domain.job.destination.DefaultMediaSourceFileFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -14,7 +15,7 @@ import static org.junit.Assert.fail;
  */
 public class MediaSourceFileFactoryDefaultTest {
 
-	private final MediaSourceFileFactory factory = MediaSourceFileFactory.DEFAULT;
+	private MediaSourceFileFactory factory = new DefaultMediaSourceFileFactory();
 
 	@Test
 	public void createLocalStorageMediaSourceFile() {
