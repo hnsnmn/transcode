@@ -1,6 +1,6 @@
 package hnsnmn.domain.job.destination;
 
-import hnsnmn.application.transcode.DestinationStorageFactory;
+import hnsnmn.domain.job.DestinationStorageFactory;
 import hnsnmn.domain.job.DestinationStorage;
 
 /**
