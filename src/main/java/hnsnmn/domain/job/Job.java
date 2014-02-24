@@ -16,15 +16,10 @@ public class Job {
 
 	private Long id;
 	private State state;
-	private Exception occurredException;
-
 	private MediaSourceFile mediaSourceFile;
-
 	private DestinationStorage destinationStorage;
-
 	private List<OutputFormat> outputFormmat;
 	private ResultCallback callback;
-
 	private String exceptionMessage;
 
 	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats, ResultCallback callback) {
@@ -81,17 +76,7 @@ public class Job {
 		return id;
 	}
 
-	public static enum State {
-		COMPLETED,
-		MEDIASOURCECOPYING,
-		TRANSCODING,
-		EXTRACTINGTHUMBNAIL,
-		STORING,
-		NOTIFYING, CREATED;
-
-	}
-
-	public void transcode( Transcoder transcoder, ThumbnailExtractor thumbnailExtractor) {
+	public void transcode(Transcoder transcoder, ThumbnailExtractor thumbnailExtractor) {
 		try {
 			// 미디어 원본으로부터 파일을 로컬에 복사한다.
 			File multimediaFile = copyMultimediaSourceToLocal();
@@ -145,6 +130,15 @@ public class Job {
 
 	private void completed() {
 		changeState(Job.State.COMPLETED);
+	}
+
+	public static enum State {
+		COMPLETED,
+		MEDIASOURCECOPYING,
+		TRANSCODING,
+		EXTRACTINGTHUMBNAIL,
+		STORING,
+		NOTIFYING, CREATED;
 	}
 
 }
