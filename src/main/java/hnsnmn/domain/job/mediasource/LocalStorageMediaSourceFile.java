@@ -1,4 +1,6 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.mediasource;
+
+import hnsnmn.domain.job.MediaSourceFile;
 
 import java.io.File;
 

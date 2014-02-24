@@ -1,4 +1,8 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.mediasource;
+
+import hnsnmn.domain.job.MediaSourceFile;
+import hnsnmn.domain.job.MediaSourceFileFactory;
+import hnsnmn.domain.job.mediasource.LocalStorageMediaSourceFile;
 
 /**
 * Created with IntelliJ IDEA.
