@@ -12,18 +12,16 @@ import java.util.List;
 * Time: 오후 4:55
 * To change this template use File | Settings | File Templates.
 */
-public class FileDestinationStorage implements DestinationStorage {
-	private String folder;
-
-	public FileDestinationStorage(String folder) {
-		this.folder = folder;
+public class FileDestinationStorage extends DestinationStorage {
+	public FileDestinationStorage(String url) {
+		super(url);
 	}
 
 	@Override
 	public void save(List<File> multimediaFiles, List<File> thumbnails) {
 		try {
-			copy(multimediaFiles, folder);
-			copy(thumbnails, folder);
+			copy(multimediaFiles, getUrl());
+			copy(thumbnails, getUrl());
 		} catch (IOException ex) {
 			throw new RuntimeException("Fail to copy : " + ex.getMessage(), ex);
 		}
