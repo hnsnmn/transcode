@@ -28,7 +28,7 @@ public class Job {
 		this.destinationStorage = destinationStorage;
 		this.outputFormmat = outputFormmats;
 		this.callback = callback;
-		this.state = State.CREATED;
+		this.state = State.WAITING;
 	}
 
 	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback) {
@@ -40,7 +40,7 @@ public class Job {
 	}
 
 	public boolean isWaiting() {
-		return state == null;
+		return state == State.WAITING;
 	}
 
 	public boolean isFinish() {
@@ -138,7 +138,7 @@ public class Job {
 		TRANSCODING,
 		EXTRACTINGTHUMBNAIL,
 		STORING,
-		NOTIFYING, CREATED;
+		NOTIFYING, WAITING;
 	}
 
 }
