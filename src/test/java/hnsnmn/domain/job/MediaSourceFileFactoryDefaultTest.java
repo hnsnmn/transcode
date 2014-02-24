@@ -1,6 +1,7 @@
 package hnsnmn.domain.job;
 
-import hnsnmn.domain.job.destination.DefaultMediaSourceFileFactory;
+import hnsnmn.domain.job.mediasource.DefaultMediaSourceFileFactory;
+import hnsnmn.domain.job.mediasource.LocalStorageMediaSourceFile;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
