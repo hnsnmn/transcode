@@ -35,8 +35,8 @@ public class Job {
 		this.callback = callback;
 	}
 
-	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats) {
-		this(null, mediaSourceFile, destinationStorage, outputFormats, null);
+	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback) {
+		this(null, mediaSourceFile, destinationStorage, outputFormats, callback);
 	}
 
 	public String getExceptionMessage() {
