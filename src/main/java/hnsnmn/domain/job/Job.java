@@ -3,6 +3,7 @@ package hnsnmn.domain.job;
 import hnsnmn.infra.persistence.ExceptionMessageUtil;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -14,19 +15,24 @@ import java.util.List;
  */
 public class Job {
 
+	public static enum State {
+		COMPLETED, MEDIASOURCECOPYING, TRANSCODING, EXTRACTINGTHUMBNAIL, STORING, NOTIFYING, WAITING
+	}
+
 	private Long id;
 	private State state;
 	private MediaSourceFile mediaSourceFile;
 	private DestinationStorage destinationStorage;
-	private List<OutputFormat> outputFormmat;
+	private List<OutputFormat> outputFormats;
 	private ResultCallback callback;
+
 	private String exceptionMessage;
 
 	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats, ResultCallback callback) {
 		this.id = id;
 		this.mediaSourceFile = mediaSourceFile;
 		this.destinationStorage = destinationStorage;
-		this.outputFormmat = outputFormmats;
+		this.outputFormats = outputFormmats;
 		this.callback = callback;
 		this.state = State.WAITING;
 	}
@@ -110,7 +116,7 @@ public class Job {
 
 	private List<File> transcode(File mediaFile, Transcoder transcoder) {
 		changeState(Job.State.TRANSCODING);
-		return transcoder.transcode(mediaFile, outputFormmat);
+		return transcoder.transcode(mediaFile, outputFormats);
 	}
 
 	private List<File> extractThumbnail(File multimediaFile, ThumbnailExtractor thumbnailExtractor) {
@@ -132,13 +138,34 @@ public class Job {
 		changeState(Job.State.COMPLETED);
 	}
 
-	public static enum State {
-		COMPLETED,
-		MEDIASOURCECOPYING,
-		TRANSCODING,
-		EXTRACTINGTHUMBNAIL,
-		STORING,
-		NOTIFYING, WAITING;
+	private List<OutputFormat> getOutputFormats() {
+		return Collections.unmodifiableList(outputFormats);
 	}
 
+	public Exporter exporter(Exporter exporter) {
+		exporter.addId(id);
+		exporter.addState(state);
+		exporter.addMediaSource(mediaSourceFile.getUrl());
+		exporter.addDestinationStorage(destinationStorage.getUrl());
+		exporter.addResultCallback(callback.getUrl());
+		exporter.addOutputFormat(getOutputFormats());
+		exporter.addExceptionMessage(exceptionMessage);
+		return exporter;
+	}
+
+	private static interface Exporter {
+		public void addId(Long id);
+
+		public void addState(Job.State state);
+
+		public void addMediaSource(String url);
+
+		public void addDestinationStorage(String url);
+
+		public void addResultCallback(String url);
+
+		public void addExceptionMessage(String exceptionMessage);
+
+		public void addOutputFormat(List<OutputFormat> outputFormats);
+	}
 }
