@@ -33,6 +33,7 @@ public class Job {
 		this.destinationStorage = destinationStorage;
 		this.outputFormmat = outputFormmats;
 		this.callback = callback;
+		this.state = State.CREATED;
 	}
 
 	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback) {
@@ -86,7 +87,7 @@ public class Job {
 		TRANSCODING,
 		EXTRACTINGTHUMBNAIL,
 		STORING,
-		NOTIFYING;
+		NOTIFYING, CREATED;
 
 	}
 
