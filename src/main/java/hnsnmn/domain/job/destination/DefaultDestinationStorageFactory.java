@@ -2,7 +2,6 @@ package hnsnmn.domain.job.destination;
 
 import hnsnmn.application.transcode.DestinationStorageFactory;
 import hnsnmn.domain.job.DestinationStorage;
-import hnsnmn.domain.job.FileDestinationStorage;
 
 /**
  * Created with IntelliJ IDEA.

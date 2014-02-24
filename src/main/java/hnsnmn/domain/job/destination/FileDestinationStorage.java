@@ -1,4 +1,6 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.destination;
+
+import hnsnmn.domain.job.DestinationStorage;
 
 import java.io.*;
 import java.util.List;
