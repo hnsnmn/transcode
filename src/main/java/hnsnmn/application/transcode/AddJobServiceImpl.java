@@ -9,11 +9,11 @@ import hnsnmn.domain.job.*;
 * Time: 오전 9:46
 * To change this template use File | Settings | File Templates.
 */
-class AddJobServiceImpl implements AddJobService {
-	private final MediaSourceFileFactory mediaSourceFileFactory;
-	private final DestinationStorageFactory destinationStorageFactory;
-	private final JobRepository jobRepository;
-	private final ResultCallbackFactory resultCallbackFactory;
+public class AddJobServiceImpl implements AddJobService {
+	private MediaSourceFileFactory mediaSourceFileFactory;
+	private DestinationStorageFactory destinationStorageFactory;
+	private JobRepository jobRepository;
+	private ResultCallbackFactory resultCallbackFactory;
 
 
 	public AddJobServiceImpl(MediaSourceFileFactory mediaSourceFileFactory, DestinationStorageFactory destinationStorageFactory, ResultCallbackFactory resultCallbackFactory, JobRepository jobRepository) {
