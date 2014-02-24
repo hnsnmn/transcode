@@ -9,6 +9,16 @@ import java.io.File;
  * Time: 오후 4:23
  * To change this template use File | Settings | File Templates.
  */
-public interface MediaSourceFile {
-	File getSourceFile();
+public abstract class MediaSourceFile {
+	private String url;
+
+	public MediaSourceFile(String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public abstract File getSourceFile();
 }
