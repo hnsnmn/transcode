@@ -19,13 +19,13 @@ public class DefaultDestinationStorageFactoryTest {
 	DestinationStorageFactory factory = new DefaultDestinationStorageFactory();
 
 	@Test
-	public void createFileDestinationFactory() {
+	public void shouldCreateFileDestinationFactory() {
 		DestinationStorage destinationStorage = factory.create("file://usr/local");
 		assertTrue(destinationStorage instanceof FileDestinationStorage);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void createNotSurpportedDestination() {
+	public void shouldThrowExceptionWhenUrlIsNotSurpported() {
 		factory.create("xxx://www.naver.com");
 		fail("must thorw Exception");
 	}
