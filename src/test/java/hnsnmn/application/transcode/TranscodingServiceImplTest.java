@@ -14,10 +14,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertFalse;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -131,13 +128,11 @@ public class TranscodingServiceImplTest {
 
 
 	private void excuteFailingTranscodeAndAssertFail(Job.State expected) {
-		Exception throwEx = null;
 		try {
 			transcodingService.transcode(jobId);
-		} catch (Exception e) {
-			throwEx = e;
+		} catch (Exception ex) {
+			assertSame(mockException, ex);
 		}
-		assertThat(throwEx, instanceOf(Exception.class));
 
 		Job job = jobRepository.findById(jobId);
 		assertTrue(job.isFinish());
