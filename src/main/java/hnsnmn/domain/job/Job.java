@@ -138,7 +138,7 @@ public class Job {
 		changeState(Job.State.COMPLETED);
 	}
 
-	private List<OutputFormat> getOutputFormats() {
+	public List<OutputFormat> getOutputFormats() {
 		return Collections.unmodifiableList(outputFormats);
 	}
 
