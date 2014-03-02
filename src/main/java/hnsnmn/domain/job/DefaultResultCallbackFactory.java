@@ -1,7 +1,5 @@
 package hnsnmn.domain.job;
 
-import hnsnmn.application.transcode.ResultCallbackFactory;
-
 /**
  * Created with IntelliJ IDEA.
  * User: hongseongmin
