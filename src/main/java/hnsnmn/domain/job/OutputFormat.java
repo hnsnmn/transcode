@@ -7,15 +7,23 @@ package hnsnmn.domain.job;
 * Time: 오후 10:54
 * To change this template use File | Settings | File Templates.
 */
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class OutputFormat {
-	private int width;
-	private int height;
-	private int bitrate;
+	@Column(name = "WIDTH") private int width;
+	@Column(name = "HEIGHT") private int height;
+	@Column(name = "BITRATE") private int bitrate;
+	@Column(name = "CONTAINER") private Container container;
+	@Column(name = "VIDEO_CODEC") private VideoCodec videoCodec;
+	@Column(name = "AUDIO_CODEC") private AudioCodec audioCodec;
 
-	private VideoCodec videoCodec;
-	private AudioCodec audioCodec;
-	private Container container;
+	@SuppressWarnings("unused")
+	public OutputFormat() {
 
+	}
 	public OutputFormat(int width, int height, int bitrate, Container container, VideoCodec videoCodec, AudioCodec audioCodec) {
 		this.width = width;
 		this.height = height;
