@@ -9,7 +9,7 @@ package hnsnmn.domain.job;
 */
 public class HttpResultCallback extends ResultCallback {
 
-	HttpResultCallback(String url) {
+	public HttpResultCallback(String url) {
 		super(url);
 	}
 
