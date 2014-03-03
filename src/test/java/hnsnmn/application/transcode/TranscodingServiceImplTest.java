@@ -53,7 +53,7 @@ public class TranscodingServiceImplTest {
 //		mediaSourceCopier = mock(MediaSourceCopier.class);
 		MockitoAnnotations.initMocks(this);
 
-		mockJob = new Job(jobId, mediaSourceFile, destinationStorage, outputFormmats, callback);
+		mockJob = new Job(jobId, Job.State.WAITING, mediaSourceFile, destinationStorage, outputFormmats, callback, null);
 		when(mediaSourceFile.getSourceFile()).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, outputFormmats)).thenReturn(mockMultimediaFiles);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
