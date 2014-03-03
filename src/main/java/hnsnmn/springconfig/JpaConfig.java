@@ -12,6 +12,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.beans.PropertyVetoException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -32,7 +33,7 @@ public class JpaConfig {
 	}
 
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean() {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws PropertyVetoException {
 		LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
 		factoryBean.setPersistenceUnitName("hnsnmn");
 		factoryBean.setDataSource(dataSource);
@@ -49,9 +50,9 @@ public class JpaConfig {
 	}
 
 	@Bean
-	public PlatformTransactionManager transactionManager() {
+	public PlatformTransactionManager transactionManager() throws PropertyVetoException {
 		JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
-		jpaTransactionManager.setEntityManagerFactory(entityManagerFactoryBean().getObject());
+		jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 		return jpaTransactionManager;
 	}
 
