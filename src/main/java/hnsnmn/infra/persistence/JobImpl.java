@@ -28,5 +28,6 @@ public class JobImpl extends Job {
 	@Override
 	protected void changeState(State newState) {
 		super.changeState(newState);
+		jobDataDao.updateState(getId(), newState);
 	}
 }
