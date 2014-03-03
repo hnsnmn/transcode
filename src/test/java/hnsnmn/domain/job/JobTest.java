@@ -50,7 +50,7 @@ public class JobTest {
 		when(transcoder.transcode(sourceFile, outputFormats)).thenReturn(multimediaFiles);
 		when(thumbnailExtractor.extract(sourceFile, jobId)).thenReturn(thumbnails);
 
-		Job job = new Job(jobId, mediaSource, destination, outputFormats, callback);
+		Job job = createWaitingJobWithID(jobId);
 		job.transcode(transcoder, thumbnailExtractor);
 
 		assertEquals(Job.State.COMPLETED, job.getLastState());
@@ -62,13 +62,17 @@ public class JobTest {
 		verify(callback, only()).notifySuccessResult(jobId);
 	}
 
+	private Job createWaitingJobWithID(long jobId) {
+		return new Job(jobId, Job.State.WAITING, mediaSource, destination, outputFormats, callback, null);
+	}
+
 	@Test
 	public void jobShouldThrowExceptionWhenFailgetSourceFile() {
 		long jobId = 1L;
 		RuntimeException exception = new RuntimeException("exception");
 		when(mediaSource.getSourceFile()).thenThrow(exception);
 
-		Job job = new Job(jobId, mediaSource, destination, outputFormats, callback);
+		Job job = createWaitingJobWithID(jobId);
 
 		try {
 			job.transcode(transcoder, thumbnailExtractor);
