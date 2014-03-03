@@ -1,6 +1,10 @@
 package hnsnmn.springconfig;
 
+import hnsnmn.domain.job.DestinationStorageFactory;
 import hnsnmn.domain.job.JobRepository;
+import hnsnmn.domain.job.MediaSourceFileFactory;
+import hnsnmn.domain.job.ResultCallbackFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,8 +18,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RepositoryConfig {
 
+	@Autowired
+	private MediaSourceFileFactory mediaSourceFileFactory;
+	@Autowired
+	private DestinationStorageFactory destinationStorageFactory;
+	@Autowired
+	private ResultCallbackFactory resultCallbackFactory;
+
 	@Bean
 	public JobRepository jobRepository() {
-		return new JpaJobRepository();
+		return new JpaJobRepository(mediaSourceFileFactory,
+				destinationStorageFactory, resultCallbackFactory);
 	}
 }

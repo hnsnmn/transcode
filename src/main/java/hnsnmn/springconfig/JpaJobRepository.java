@@ -1,7 +1,6 @@
 package hnsnmn.springconfig;
 
-import hnsnmn.domain.job.Job;
-import hnsnmn.domain.job.JobRepository;
+import hnsnmn.domain.job.*;
 import hnsnmn.infra.persistence.JobData;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,9 +15,19 @@ import javax.persistence.PersistenceContext;
  * To change this template use File | Settings | File Templates.
  */
 public class JpaJobRepository implements JobRepository {
+	private final MediaSourceFileFactory mediaSourceFileFactory;
+	private final DestinationStorageFactory destinationStorageFactory;
+	private final ResultCallbackFactory resultCallbackFactory;
+
 	@PersistenceContext
 	private EntityManager entityManager;
 
+	public JpaJobRepository(MediaSourceFileFactory mediaSourceFileFactory, DestinationStorageFactory destinationStorageFactory,
+							ResultCallbackFactory resultCallbackFactory) {
+		this.mediaSourceFileFactory = mediaSourceFileFactory;
+		this.destinationStorageFactory = destinationStorageFactory;
+		this.resultCallbackFactory = resultCallbackFactory;
+	}
 
 	@Transactional
 	@Override
@@ -42,6 +51,11 @@ public class JpaJobRepository implements JobRepository {
 	}
 
 	private Job createJobFromJobData(JobData jobData) {
-		return null;  //To change body of created methods use File | Settings | File Templates.
+		return new Job(jobData.getId(), jobData.getState(),
+				mediaSourceFileFactory.create(jobData.getSourceUrl()),
+				destinationStorageFactory.create(jobData.getDestinationUrl()),
+				jobData.getOutputFormats(),
+				resultCallbackFactory.create(jobData.getCallbackUrl()),
+				jobData.getExceptionMessage());
 	}
 }

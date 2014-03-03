@@ -12,7 +12,7 @@ import org.springframework.context.annotation.ImportResource;
 * To change this template use File | Settings | File Templates.
 */
 @Configuration
-@Import({ RepositoryConfig.class, JpaConfig.class})
+@Import({ DomainConfig.class, RepositoryConfig.class, JpaConfig.class})
 @ImportResource("classpath:spring/datasource.xml")
 public class ApplicationContextConfig {
 }
