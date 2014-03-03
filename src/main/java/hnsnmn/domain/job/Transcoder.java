@@ -11,5 +11,5 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public interface Transcoder {
-	List<File> transcode(File mockMultimediaFile, List<OutputFormat> formmats);
+	List<File> transcode(File mockMultimediaFile, List<OutputFormat> formats);
 }
