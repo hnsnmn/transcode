@@ -1,6 +1,4 @@
-package hnsnmn.application.transcode;
-
-import hnsnmn.domain.job.ResultCallback;
+package hnsnmn.domain.job;
 
 /**
  * Created with IntelliJ IDEA.
