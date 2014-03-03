@@ -17,14 +17,12 @@ public class TranscodingRunner {
 	}
 
 	public void run() {
-		while (true) {
-			Long jobId = null;
-			try {
-				jobId = getNextWaitingJob();
-			} catch (JobQueue.CloseException ex) {
-				break;
+		try {
+			while (true) {
+				runTranscoding(getNextWaitingJob());
 			}
-			runTranscoding(jobId);
+		} catch (JobQueue.CloseException ex) {
+
 		}
 	}
 
@@ -38,5 +36,9 @@ public class TranscodingRunner {
 		} catch (RuntimeException ex) {
 
 		}
+	}
+
+	public void stop() {
+
 	}
 }
