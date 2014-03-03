@@ -1,12 +1,16 @@
 package hnsnmn.springconfig;
 
-import hnsnmn.domain.job.Job;
-import hnsnmn.domain.job.JobRepository;
+import hnsnmn.domain.job.*;
+import hnsnmn.domain.job.destination.FileDestinationStorage;
+import hnsnmn.domain.job.mediasource.LocalStorageMediaSourceFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertTrue;
@@ -32,5 +36,24 @@ public class JpaJobRepositoryIntTest {
 		assertNotNull(job);
 		assertTrue(job.isWaiting());
 		assertEquals(2, job.getOutputFormats().size());
+	}
+
+	@Test
+	public void save() {
+		List<OutputFormat> outputFormats = new ArrayList<OutputFormat>();
+		outputFormats.add(new OutputFormat(60, 40, 150, Container.MP4));
+
+		Job job = new Job(
+				new LocalStorageMediaSourceFile("file://./video.avi"),
+				new FileDestinationStorage("file://./target"), outputFormats,
+				new HttpResultCallback("http://"));
+		Job savedJob = jobRepository.save(job);
+		assertNotNull(savedJob);
+		assertNotNull(savedJob.getId());
+		assertJobsEquals(job, savedJob);
+	}
+
+	private void assertJobsEquals(Job job, Job savedJob) {
+		assertEquals(job.getOutputFormats().size(), savedJob.getOutputFormats().size());
 	}
 }
