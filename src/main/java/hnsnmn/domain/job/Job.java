@@ -144,7 +144,7 @@ public class Job {
 		return Collections.unmodifiableList(outputFormats);
 	}
 
-	public Exporter exporter(Exporter exporter) {
+	public <T> T exporter(Exporter<T> exporter) {
 		exporter.addId(id);
 		exporter.addState(state);
 		exporter.addMediaSource(mediaSourceFile.getUrl());
@@ -152,10 +152,10 @@ public class Job {
 		exporter.addResultCallback(callback.getUrl());
 		exporter.addOutputFormat(getOutputFormats());
 		exporter.addExceptionMessage(exceptionMessage);
-		return exporter;
+		return exporter.build();
 	}
 
-	public static interface Exporter {
+	public static interface Exporter<T> {
 		public void addId(Long id);
 
 		public void addState(Job.State state);
@@ -169,5 +169,7 @@ public class Job {
 		public void addExceptionMessage(String exceptionMessage);
 
 		public void addOutputFormat(List<OutputFormat> outputFormats);
+
+		public T build();
 	}
 }
