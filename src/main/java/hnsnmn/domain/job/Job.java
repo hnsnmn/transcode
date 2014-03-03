@@ -67,7 +67,7 @@ public class Job {
 		return state;
 	}
 
-	private void changeState(State state) {
+	protected void changeState(State state) {
 		this.state = state;
 	}
 
