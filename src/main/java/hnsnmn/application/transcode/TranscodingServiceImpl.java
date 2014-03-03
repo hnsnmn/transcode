@@ -29,6 +29,12 @@ public class TranscodingServiceImpl implements TranscodingService {
 		this.jobRepository = jobRepository;
 	}
 
+	public TranscodingServiceImpl(Transcoder transcoder, ThumbnailExtractor thumbnailExtractor, JobRepository jobRepository) {
+		this.transcoder = transcoder;
+		this.thumbnailExtractor = thumbnailExtractor;
+		this.jobRepository = jobRepository;
+	}
+
 	@Override
 	public void transcode(Long jobId) {
 		Job job = jobRepository.findById(jobId);
