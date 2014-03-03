@@ -71,7 +71,7 @@ public class Job {
 		this.state = state;
 	}
 
-	private void exceptionOccured(RuntimeException ex) {
+	protected void exceptionOccured(RuntimeException ex) {
 		exceptionMessage = ExceptionMessageUtil.getMessage(ex);
 		callback.notifyFailedResult(id, state, exceptionMessage);
 	}
