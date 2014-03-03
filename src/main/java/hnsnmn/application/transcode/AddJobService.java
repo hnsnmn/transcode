@@ -7,6 +7,6 @@ package hnsnmn.application.transcode;
 * Time: 오전 9:46
 * To change this template use File | Settings | File Templates.
 */
-interface AddJobService {
+public interface AddJobService {
 	Long addJob(AddJobRequest request);
 }
