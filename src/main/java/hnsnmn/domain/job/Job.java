@@ -28,17 +28,19 @@ public class Job {
 
 	private String exceptionMessage;
 
-	public Job(Long id, MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormmats, ResultCallback callback) {
+	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback) {
+		this(null, State.WAITING, mediaSourceFile, destinationStorage, outputFormats, callback, null);
+	}
+
+	public Job(Long id, State state, MediaSourceFile mediaSourceFile,
+			   DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback, String errorMessage) {
 		this.id = id;
 		this.mediaSourceFile = mediaSourceFile;
 		this.destinationStorage = destinationStorage;
-		this.outputFormats = outputFormmats;
+		this.outputFormats = outputFormats;
 		this.callback = callback;
-		this.state = State.WAITING;
-	}
-
-	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback) {
-		this(null, mediaSourceFile, destinationStorage, outputFormats, callback);
+		this.state = state;
+		this.exceptionMessage = errorMessage;
 	}
 
 	public String getExceptionMessage() {
