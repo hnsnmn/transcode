@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ApplicationContextConfig.class })
-public class JpaJobRepositoryIntTest {
+public class DbJobRepositoryIntTest {
 
 	@Autowired
 	private JobRepository jobRepository;
