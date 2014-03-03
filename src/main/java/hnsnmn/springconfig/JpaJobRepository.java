@@ -44,8 +44,7 @@ public class JpaJobRepository implements JobRepository {
 	@Override
 	public Job save(Job job) {
 		JobData.ExporterToJobData exporter = new JobData.ExporterToJobData();
-		job.exporter(exporter);
-		JobData jobData = exporter.getJobData();
+		JobData jobData = job.exporter(exporter);
 		entityManager.persist(jobData);
 		return createJobFromJobData(jobData);
 	}
