@@ -2,10 +2,7 @@ package hnsnmn.springconfig;
 
 import hnsnmn.domain.job.*;
 import hnsnmn.infra.persistence.JobData;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import hnsnmn.infra.persistence.JobDataDao;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,25 +11,23 @@ import javax.persistence.PersistenceContext;
  * Time: 오후 8:59
  * To change this template use File | Settings | File Templates.
  */
-public class JpaJobRepository implements JobRepository {
+public class DbJobRepository implements JobRepository {
 	private final MediaSourceFileFactory mediaSourceFileFactory;
 	private final DestinationStorageFactory destinationStorageFactory;
 	private final ResultCallbackFactory resultCallbackFactory;
+	private final JobDataDao jobDataDao;
 
-	@PersistenceContext
-	private EntityManager entityManager;
-
-	public JpaJobRepository(MediaSourceFileFactory mediaSourceFileFactory, DestinationStorageFactory destinationStorageFactory,
-							ResultCallbackFactory resultCallbackFactory) {
+	public DbJobRepository(JobDataDao jobDataDao, MediaSourceFileFactory mediaSourceFileFactory, DestinationStorageFactory destinationStorageFactory,
+						   ResultCallbackFactory resultCallbackFactory) {
+		this.jobDataDao = jobDataDao;
 		this.mediaSourceFileFactory = mediaSourceFileFactory;
 		this.destinationStorageFactory = destinationStorageFactory;
 		this.resultCallbackFactory = resultCallbackFactory;
 	}
 
-	@Transactional
 	@Override
 	public Job findById(Long jobId) {
-		JobData jobData = entityManager.find(JobData.class, jobId);
+		JobData jobData = jobDataDao.findById(jobId);
 		if (jobData == null) {
 			return null;
 		}
@@ -40,13 +35,12 @@ public class JpaJobRepository implements JobRepository {
 		return createJobFromJobData(jobData);
 	}
 
-	@Transactional
 	@Override
 	public Job save(Job job) {
 		JobData.ExporterToJobData exporter = new JobData.ExporterToJobData();
 		JobData jobData = job.exporter(exporter);
-		entityManager.persist(jobData);
-		return createJobFromJobData(jobData);
+		JobData savedJobData = jobDataDao.save(jobData);
+		return createJobFromJobData(savedJobData);
 	}
 
 	private Job createJobFromJobData(JobData jobData) {
