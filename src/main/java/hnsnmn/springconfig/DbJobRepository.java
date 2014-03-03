@@ -3,6 +3,7 @@ package hnsnmn.springconfig;
 import hnsnmn.domain.job.*;
 import hnsnmn.infra.persistence.JobData;
 import hnsnmn.infra.persistence.JobDataDao;
+import hnsnmn.infra.persistence.JobImpl;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,7 +45,7 @@ public class DbJobRepository implements JobRepository {
 	}
 
 	private Job createJobFromJobData(JobData jobData) {
-		return new Job(jobData.getId(), jobData.getState(),
+		return new JobImpl(jobDataDao, jobData.getId(), jobData.getState(),
 				mediaSourceFileFactory.create(jobData.getSourceUrl()),
 				destinationStorageFactory.create(jobData.getDestinationUrl()),
 				jobData.getOutputFormats(),
