@@ -18,7 +18,7 @@ import java.util.List;
 public class JobData {
 	@Id
 	@Column(name = "JOB_ID")
-	@TableGenerator(name = "JOB_ID_GEN", table = "ID_GENERATOR", pkColumnName = "TABLE_NAME", valueColumnName = "ID_VALUE")
+	@TableGenerator(name = "JOB_ID_GEN", table = "ID_GENERATOR", pkColumnName = "ENTITY_NAME", pkColumnValue = "JOB", valueColumnName = "ID_VALUE")
 	@GeneratedValue(strategy = GenerationType.TABLE, generator = "JOB_ID_GEN")
 	private Long id;
 
@@ -71,7 +71,7 @@ public class JobData {
 		return outputFormats;
 	}
 
-	public static class ExporterToJobData implements Job.Exporter {
+	public static class ExporterToJobData implements Job.Exporter<JobData> {
 		private JobData jobData = new JobData();
 
 		@Override
@@ -109,7 +109,8 @@ public class JobData {
 			jobData.outputFormats = outputFormats;
 		}
 
-		public JobData getJobData() {
+		@Override
+		public JobData build() {
 			return jobData;
 		}
 	}
