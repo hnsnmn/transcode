@@ -47,17 +47,20 @@ public class TranscodingServiceImplTest {
 	@Mock private DestinationStorage destinationStorage;
 	private TranscodingService transcodingService;
 	private Job mockJob;
+	private ThumbnailPolicy thumbnailPolicy;
 
 	@Before
 	public void setUp() {
 //		mediaSourceCopier = mock(MediaSourceCopier.class);
 		MockitoAnnotations.initMocks(this);
+		thumbnailPolicy = new ThumbnailPolicy();
 
-		mockJob = new Job(jobId, Job.State.WAITING, mediaSourceFile, destinationStorage, outputFormmats, callback, null);
+		mockJob = new Job(jobId, Job.State.WAITING, mediaSourceFile, destinationStorage,
+				outputFormmats, callback, thumbnailPolicy, null);
 		when(mediaSourceFile.getSourceFile()).thenReturn(mockMultimediaFile);
 		when(transcoder.transcode(mockMultimediaFile, outputFormmats)).thenReturn(mockMultimediaFiles);
 		when(jobRepository.findById(jobId)).thenReturn(mockJob);
-		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenReturn(mockThumbnails);
+		when(thumbnailExtractor.extract(mockMultimediaFile, thumbnailPolicy)).thenReturn(mockThumbnails);
 
 		transcodingService = new TranscodingServiceImpl( thumbnailExtractor,
 				transcoder,
@@ -107,7 +110,7 @@ public class TranscodingServiceImplTest {
 
 	@Test
 	public void transcodeFailBecauseExceptionOccuredAtThumbnailExtractor() {
-		when(thumbnailExtractor.extract(mockMultimediaFile, jobId)).thenThrow(mockException);
+		when(thumbnailExtractor.extract(mockMultimediaFile, thumbnailPolicy)).thenThrow(mockException);
 
 		excuteFailingTranscodeAndAssertFail(Job.State.EXTRACTINGTHUMBNAIL);
 
@@ -157,9 +160,9 @@ public class TranscodingServiceImplTest {
 				verify(transcoder, only()).transcode(mockMultimediaFile, outputFormmats);
 
 			if (this.thumbnailExtractorNever)
-				verify(thumbnailExtractor, never()).extract(any(File.class), anyLong());
+				verify(thumbnailExtractor, never()).extract(any(File.class), any(ThumbnailPolicy.class));
 			else
-				verify(thumbnailExtractor, only()).extract(mockMultimediaFile, jobId);
+				verify(thumbnailExtractor, only()).extract(mockMultimediaFile, thumbnailPolicy);
 
 			if (this.destinationStorageNever)
 				verify(destinationStorage, never()).save(mockMultimediaFiles, mockThumbnails);
