@@ -1,6 +1,6 @@
 package hnsnmn.springconfig;
 
-import hnsnmn.application.jobqueue.MemoryJobQueue;
+import hnsnmn.application.transcode.jobqueue.MemoryJobQueue;
 import hnsnmn.application.transcode.*;
 import hnsnmn.domain.job.*;
 import org.springframework.beans.factory.annotation.Autowired;

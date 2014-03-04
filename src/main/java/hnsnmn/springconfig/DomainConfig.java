@@ -1,7 +1,7 @@
 package hnsnmn.springconfig;
 
 import hnsnmn.domain.job.ResultCallbackFactory;
-import hnsnmn.domain.job.DefaultResultCallbackFactory;
+import hnsnmn.domain.job.callback.DefaultResultCallbackFactory;
 import hnsnmn.domain.job.DestinationStorageFactory;
 import hnsnmn.domain.job.MediaSourceFileFactory;
 import hnsnmn.domain.job.destination.DefaultDestinationStorageFactory;

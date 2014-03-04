@@ -1,4 +1,7 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.callback;
+
+import hnsnmn.domain.job.ResultCallback;
+import hnsnmn.domain.job.ResultCallbackFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -7,7 +10,7 @@ package hnsnmn.domain.job;
  * Time: 오후 10:23
  * To change this template use File | Settings | File Templates.
  */
-public class DefaultResultCallbackFactory implements ResultCallbackFactory{
+public class DefaultResultCallbackFactory implements ResultCallbackFactory {
 	@Override
 	public ResultCallback create(String url) {
 		if (url.startsWith("http://") || url.startsWith("https://")) {

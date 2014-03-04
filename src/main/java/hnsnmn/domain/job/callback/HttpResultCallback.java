@@ -1,4 +1,7 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.callback;
+
+import hnsnmn.domain.job.Job;
+import hnsnmn.domain.job.ResultCallback;
 
 /**
 * Created with IntelliJ IDEA.

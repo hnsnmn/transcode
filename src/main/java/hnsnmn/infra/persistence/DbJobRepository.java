@@ -1,4 +1,4 @@
-package hnsnmn.springconfig;
+package hnsnmn.infra.persistence;
 
 import hnsnmn.domain.job.*;
 import hnsnmn.infra.persistence.JobData;

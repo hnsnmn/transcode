@@ -1,5 +1,7 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.destination;
 
+import hnsnmn.domain.job.DestinationStorage;
+import hnsnmn.domain.job.DestinationStorageFactory;
 import hnsnmn.domain.job.destination.DefaultDestinationStorageFactory;
 import hnsnmn.domain.job.destination.FileDestinationStorage;
 import org.junit.Test;

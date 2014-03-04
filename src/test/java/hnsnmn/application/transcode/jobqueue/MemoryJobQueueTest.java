@@ -1,4 +1,4 @@
-package hnsnmn.application.jobqueue;
+package hnsnmn.application.transcode.jobqueue;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -1,5 +1,8 @@
-package hnsnmn.domain.job;
+package hnsnmn.domain.job.callback;
 
+import hnsnmn.domain.job.ResultCallback;
+import hnsnmn.domain.job.callback.DefaultResultCallbackFactory;
+import hnsnmn.domain.job.callback.HttpResultCallback;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

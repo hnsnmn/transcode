@@ -4,6 +4,7 @@ import hnsnmn.domain.job.DestinationStorageFactory;
 import hnsnmn.domain.job.JobRepository;
 import hnsnmn.domain.job.MediaSourceFileFactory;
 import hnsnmn.domain.job.ResultCallbackFactory;
+import hnsnmn.infra.persistence.DbJobRepository;
 import hnsnmn.infra.persistence.JobDataDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

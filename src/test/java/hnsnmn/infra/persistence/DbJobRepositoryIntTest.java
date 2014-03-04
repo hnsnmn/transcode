@@ -1,8 +1,10 @@
-package hnsnmn.springconfig;
+package hnsnmn.infra.persistence;
 
 import hnsnmn.domain.job.*;
+import hnsnmn.domain.job.callback.HttpResultCallback;
 import hnsnmn.domain.job.destination.FileDestinationStorage;
 import hnsnmn.domain.job.mediasource.LocalStorageMediaSourceFile;
+import hnsnmn.springconfig.ApplicationContextConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

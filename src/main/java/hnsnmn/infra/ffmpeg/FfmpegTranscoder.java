@@ -34,9 +34,9 @@ public class FfmpegTranscoder implements Transcoder {
 	}
 
 	private File transcode(File sourceFile, OutputFormat format) {
+		String outputFile = getFileName(format);
 		IMediaReader reader = ToolFactory.makeReader(sourceFile.getAbsolutePath());
 
-		String outputFile = getFileName(format);
 		VideoConverter converter = new VideoConverter(outputFile, reader, format);
 		reader.addListener(converter);
 

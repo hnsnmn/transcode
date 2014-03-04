@@ -36,9 +36,9 @@ public class FfmpegTranscoderTest {
 		multimediaFile = new File("src/test/resources/sample.avi");
 		outputFormats = new ArrayList<OutputFormat>();
 		mp4Format = new OutputFormat(WIDTH, HEIGHT, BITRATE, Container.MP4,
-				VideoCodec.H264, AudioCodec.AAC);
+				VideoCodec.H264, AudioCodec.MP3);
 		mp4Format2 = new OutputFormat(80, 60, 80, Container.MP4,
-				VideoCodec.H264, AudioCodec.AAC);
+				VideoCodec.H264, AudioCodec.MP3);
 		aviFormat = new OutputFormat(80, 60, 80, Container.AVI,
 				VideoCodec.MPEG4, AudioCodec.MP3);
 	}
