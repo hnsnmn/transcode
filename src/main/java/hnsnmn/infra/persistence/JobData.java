@@ -2,6 +2,7 @@ package hnsnmn.infra.persistence;
 
 import hnsnmn.domain.job.Job;
 import hnsnmn.domain.job.OutputFormat;
+import hnsnmn.domain.job.ThumbnailPolicy;
 
 import javax.persistence.*;
 import java.util.List;
@@ -43,6 +44,9 @@ public class JobData {
 	@OrderColumn(name = "LIST_IDX")
 	private List<OutputFormat> outputFormats;
 
+	@Embedded
+	private ThumbnailPolicy thumbnailPolicy;
+
 	public Long getId() {
 		return id;
 	}
@@ -69,6 +73,10 @@ public class JobData {
 
 	public List<OutputFormat> getOutputFormats() {
 		return outputFormats;
+	}
+
+	public ThumbnailPolicy getThumbnailPolicy() {
+		return thumbnailPolicy;
 	}
 
 	public static class ExporterToJobData implements Job.Exporter<JobData> {
@@ -107,6 +115,11 @@ public class JobData {
 		@Override
 		public void addOutputFormat(List<OutputFormat> outputFormats) {
 			jobData.outputFormats = outputFormats;
+		}
+
+		@Override
+		public void addThumbnailPolicy(ThumbnailPolicy thumbnailPolicy) {
+			jobData.thumbnailPolicy = thumbnailPolicy;
 		}
 
 		@Override

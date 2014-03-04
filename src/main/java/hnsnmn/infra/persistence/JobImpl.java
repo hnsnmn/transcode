@@ -19,9 +19,10 @@ public class JobImpl extends Job {
 				   DestinationStorage destinationStorage,
 				   List<OutputFormat> outputFormats,
 				   ResultCallback callback,
+				   ThumbnailPolicy thumbnailPolicy,
 				   String errorMessage) {
 		super(id, state, mediaSourceFile, destinationStorage, outputFormats,
-				callback, errorMessage);
+				callback, thumbnailPolicy, errorMessage);
 		this.jobDataDao = jobDataDao;
 	}
 
