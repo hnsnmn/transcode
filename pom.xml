@@ -41,7 +41,7 @@
 		<!-- ffmpeg -->
 		<dependency>
 			<groupId>it.sauronsoftware</groupId>
-			<artifactId>java</artifactId>
+			<artifactId>jave</artifactId>
 			<version>1.0.2</version>
 		</dependency>
 		<dependency>
