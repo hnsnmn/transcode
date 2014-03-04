@@ -1,5 +1,6 @@
 package hnsnmn.springconfig;
 
+import hnsnmn.domain.job.ThumbnailExtractor;
 import hnsnmn.domain.job.Transcoder;
 import hnsnmn.infra.ffmpeg.FfmpegTranscoder;
 import hnsnmn.infra.ffmpeg.NamingRule;
@@ -19,5 +20,10 @@ public class FfmpegConfig {
 	@Bean
 	public Transcoder transcoder() {
 		return new FfmpegTranscoder(NamingRule.DEFAULT);
+	}
+
+	@Bean
+	public ThumbnailExtractor thumbnailExtractor() {
+		return new FfmpegThumbnailExtractor();
 	}
 }

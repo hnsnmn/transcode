@@ -27,7 +27,7 @@ public class TranscodeApplicatonConfig {
 	private JobRepository jobRepository;
 	@Autowired
 	private Transcoder transcoder;
-
+	@Autowired
 	private ThumbnailExtractor thumbnailExtractor;
 
 	@Bean

@@ -4,6 +4,7 @@ import hnsnmn.domain.job.*;
 import hnsnmn.infra.persistence.JobData;
 import hnsnmn.infra.persistence.JobDataDao;
 import hnsnmn.infra.persistence.JobImpl;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +27,7 @@ public class DbJobRepository implements JobRepository {
 		this.resultCallbackFactory = resultCallbackFactory;
 	}
 
+	@Transactional
 	@Override
 	public Job findById(Long jobId) {
 		JobData jobData = jobDataDao.findById(jobId);
@@ -36,20 +38,22 @@ public class DbJobRepository implements JobRepository {
 		return createJobFromJobData(jobData);
 	}
 
-	@Override
-	public Job save(Job job) {
-		JobData.ExporterToJobData exporter = new JobData.ExporterToJobData();
-		JobData jobData = job.exporter(exporter);
-		JobData savedJobData = jobDataDao.save(jobData);
-		return createJobFromJobData(savedJobData);
-	}
-
 	private Job createJobFromJobData(JobData jobData) {
 		return new JobImpl(jobDataDao, jobData.getId(), jobData.getState(),
 				mediaSourceFileFactory.create(jobData.getSourceUrl()),
 				destinationStorageFactory.create(jobData.getDestinationUrl()),
 				jobData.getOutputFormats(),
 				resultCallbackFactory.create(jobData.getCallbackUrl()),
+				jobData.getThumbnailPolicy(),
 				jobData.getExceptionMessage());
+	}
+
+	@Transactional
+	@Override
+	public Job save(Job job) {
+		JobData.ExporterToJobData exporter = new JobData.ExporterToJobData();
+		JobData jobData = job.exporter(exporter);
+		JobData savedJobData = jobDataDao.save(jobData);
+		return createJobFromJobData(savedJobData);
 	}
 }
