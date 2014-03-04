@@ -16,11 +16,13 @@ import java.util.List;
 public class Job {
 
 	public static enum State {
-		COMPLETED, MEDIASOURCECOPYING, TRANSCODING, EXTRACTINGTHUMBNAIL, STORING, NOTIFYING, WAITING
+		COMPLETED, MEDIASOURCECOPYING, TRANSCODING, EXTRACTINGTHUMBNAIL, STORING, NOTIFYING, WAITING;
 	}
 
 	private Long id;
 	private State state;
+	private ThumbnailPolicy thumbnailPolicy;
+
 	private MediaSourceFile mediaSourceFile;
 	private DestinationStorage destinationStorage;
 	private List<OutputFormat> outputFormats;
@@ -28,18 +30,23 @@ public class Job {
 
 	private String exceptionMessage;
 
-	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback) {
-		this(null, State.WAITING, mediaSourceFile, destinationStorage, outputFormats, callback, null);
+	public Job(MediaSourceFile mediaSourceFile, DestinationStorage destinationStorage,
+			   List<OutputFormat> outputFormats,
+			   ResultCallback callback, ThumbnailPolicy thumbnailPolicy) {
+		this(null, State.WAITING, mediaSourceFile, destinationStorage, outputFormats, callback, thumbnailPolicy, null);
 	}
 
 	public Job(Long id, State state, MediaSourceFile mediaSourceFile,
-			   DestinationStorage destinationStorage, List<OutputFormat> outputFormats, ResultCallback callback, String errorMessage) {
+			   DestinationStorage destinationStorage, List<OutputFormat> outputFormats,
+			   ResultCallback callback,ThumbnailPolicy thumbnailPolicy,
+			   String errorMessage) {
 		this.id = id;
 		this.mediaSourceFile = mediaSourceFile;
 		this.destinationStorage = destinationStorage;
 		this.outputFormats = outputFormats;
 		this.callback = callback;
 		this.state = state;
+		this.thumbnailPolicy = thumbnailPolicy;
 		this.exceptionMessage = errorMessage;
 	}
 
@@ -57,6 +64,10 @@ public class Job {
 
 	private boolean isExceptionOccurred() {
 		return exceptionMessage != null;
+	}
+
+	public ThumbnailPolicy getThumbnailPolicy() {
+		return thumbnailPolicy;
 	}
 
 	public boolean isSuccess() {
@@ -123,7 +134,7 @@ public class Job {
 
 	private List<File> extractThumbnail(File multimediaFile, ThumbnailExtractor thumbnailExtractor) {
 		changeState(Job.State.EXTRACTINGTHUMBNAIL);
-		return thumbnailExtractor.extract(multimediaFile, id);
+		return thumbnailExtractor.extract(multimediaFile, thumbnailPolicy);
 	}
 
 	private void storeCreatedFilesToDestination(List<File> multimediaFiles, List<File> thumbnails) {
@@ -152,6 +163,7 @@ public class Job {
 		exporter.addResultCallback(callback.getUrl());
 		exporter.addOutputFormat(getOutputFormats());
 		exporter.addExceptionMessage(exceptionMessage);
+		exporter.addThumbnailPolicy(thumbnailPolicy);
 		return exporter.build();
 	}
 
@@ -169,6 +181,8 @@ public class Job {
 		public void addExceptionMessage(String exceptionMessage);
 
 		public void addOutputFormat(List<OutputFormat> outputFormats);
+
+		public void addThumbnailPolicy(ThumbnailPolicy thumbnailPolicy);
 
 		public T build();
 	}
